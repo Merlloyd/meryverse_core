@@ -1,0 +1,67 @@
+<!-- Lock Screen Template — used by encrypted MXH apps -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <!-- Step 1: Choose load or create -->
+    <div id="ls-step1">
+      <h2>Willkommen</h2>
+      <p class="sub">Bestehende Datei laden oder neue anlegen</p>
+      <div class="lock-options">
+        <div id="opt-load" class="lock-option selected" onclick="lsChoose('load')">
+          <h3>Bestehende Datei laden</h3>
+          <p>Verschlüsselte .json-Datei öffnen</p>
+        </div>
+        <div id="opt-new" class="lock-option" onclick="lsChoose('new')">
+          <h3>Neue Datei anlegen</h3>
+          <p>Leere Datei mit Kennwortschutz erstellen</p>
+        </div>
+      </div>
+      <div class="pw-row" style="margin-top:20px">
+        <button class="btn-primary" onclick="lsNext1()" style="width:100%">Weiter</button>
+      </div>
+    </div>
+
+    <!-- Step 2a: Load existing file -->
+    <div id="ls-step2-load" style="display:none">
+      <h2>Datei laden</h2>
+      <p class="sub">Verschlüsselte .json-Datei auswählen und Kennwort eingeben</p>
+      <div id="ls-dz" style="border:2px dashed var(--border2); border-radius:var(--radius); padding:24px; text-align:center; cursor:pointer; margin-bottom:12px;" onclick="document.getElementById('ls-fi').click()">
+        <span id="ls-dz-label">Datei auswählen oder hierher ziehen</span>
+        <input type="file" id="ls-fi" accept=".json" style="display:none">
+      </div>
+      <div id="ls-file-info" style="font-size:12px; color:var(--text2); margin-bottom:8px;"></div>
+      <div class="pw-row">
+        <input type="password" id="ls-pw" placeholder="Kennwort" onkeydown="if(event.key==='Enter')lsUnlock()">
+        <button class="btn-primary" onclick="lsUnlock()">Entsperren</button>
+      </div>
+      <div id="ls-error" class="err-msg"></div>
+      <div class="pw-row" style="margin-top:12px">
+        <button class="btn-primary" onclick="lsBack()" style="background:var(--surface2); width:100%">Zurück</button>
+      </div>
+    </div>
+
+    <!-- Step 2b: Create new file -->
+    <div id="ls-step2-new" style="display:none">
+      <h2>Neue Datei</h2>
+      <p class="sub">Bezeichnung und zwei Kennwörter vergeben</p>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px; color:var(--text2);">Bezeichnung</label>
+        <input type="text" id="ls-label" placeholder="z.B. Projekt Alpha" style="width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 12px; color:var(--text); font-size:13px; margin-top:4px;">
+      </div>
+      <div class="lock-new-section">
+        <div style="margin-bottom:8px">
+          <label style="font-size:12px; color:var(--text2);">Vollzugriff-Kennwort (min. 8 Zeichen)</label>
+          <input type="password" id="ls-pw-full" placeholder="Vollzugriff-Kennwort" style="width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 12px; color:var(--text); font-size:13px; margin-top:4px;">
+        </div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:12px; color:var(--text2);">Lese-Kennwort (min. 8 Zeichen, muss anders sein)</label>
+          <input type="password" id="ls-pw-read" placeholder="Lese-Kennwort" style="width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 12px; color:var(--text); font-size:13px; margin-top:4px;">
+        </div>
+      </div>
+      <div id="ls-new-error" class="err-msg"></div>
+      <div class="pw-row" style="margin-top:12px">
+        <button class="btn-primary" onclick="lsBack()" style="background:var(--surface2)">Zurück</button>
+        <button class="btn-primary" onclick="lsCreateNew()" style="flex:1">Erstellen & Starten</button>
+      </div>
+    </div>
+  </div>
+</div>

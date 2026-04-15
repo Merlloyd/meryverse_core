@@ -1,0 +1,67 @@
+/* MXH Lock Screen - Shared CSS */
+
+/* ===== LOCK SCREEN ===== */
+#lock-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.lock-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  width: 400px; max-width: 92vw;
+  box-shadow: var(--shadow);
+}
+
+.lock-card h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+
+.lock-card .sub { color: var(--text2); font-size: 13px; margin-bottom: 24px; }
+
+.lock-options { display: flex; flex-direction: column; gap: 10px; }
+
+.lock-option {
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.lock-option:hover { border-color: var(--accent); background: rgba(26,147,111,0.09); }
+
+.lock-option.selected { border-color: var(--accent); background: rgba(26,147,111,0.14); }
+
+.lock-option h3 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+
+.lock-option p { font-size: 12px; color: var(--text2); margin: 0; }
+
+.pw-row { display: flex; gap: 8px; margin-top: 16px; }
+
+.pw-row input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  color: var(--text); font-size: 13px;
+}
+
+.pw-row input:focus { outline: none; border-color: var(--accent); }
+
+.btn-primary {
+  padding: 9px 18px;
+  background: var(--accent);
+  border: none; border-radius: var(--radius);
+  color: #fff; font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+#ls-error, .err-msg { color: var(--neg); font-size: 12px; margin-top: 8px; min-height: 18px; }
+
+.lock-new-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
