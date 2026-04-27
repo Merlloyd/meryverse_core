@@ -2,9 +2,9 @@
 assets.py — Resolve and load shared asset files (CSS, JS, templates).
 
 All paths are relative to the meryverse_core repo root,
-which is two levels up from this file:
-  meryverse_core/python/meryverse_core/assets.py
-  └── repo root: ../../
+which is one level up from this file:
+  meryverse_core/meryverse_core/assets.py
+  └── repo root: ../
 """
 
 import os
@@ -12,7 +12,7 @@ import os
 # ─── Paths ────────────────────────────────────────────────────────────
 
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-REPO_ROOT = os.path.normpath(os.path.join(_THIS_DIR, "..", ".."))
+REPO_ROOT = os.path.normpath(os.path.join(_THIS_DIR, ".."))
 JS_DIR = os.path.join(REPO_ROOT, "js")
 TEMPLATES_DIR = os.path.join(REPO_ROOT, "templates")
 

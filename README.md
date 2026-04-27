@@ -1,106 +1,80 @@
 # meryverse_core
 
-Gemeinsame Module für alle MXH HTML-Dashboard-Generatoren. Einmal pflegen, überall nutzen.
+Shared utilities for the Meryverse apps: design tokens, (later) crypto helpers,
+plus the legacy CSS/JS asset loader and HTML builder used by the offline
+dashboard generators (Haushaltsbuch, Aktien, Chor, FTE, Ketten, Vergleich).
 
-## Struktur
+## Install
+
+### Editable (local development)
+
+When working on `meryverse_core` and a consuming app side by side:
+
+```bash
+cd path/to/consuming-app
+pip install -e ../meryverse_core
+```
+
+Edits in `meryverse_core/` are picked up immediately — no reinstall needed.
+
+### Pinned (production)
+
+In the consuming app's `requirements.txt`, pin a Git tag:
+
+```
+meryverse-core @ git+https://github.com/Merlloyd/meryverse_core.git@v0.1.0
+```
+
+Bump the tag (e.g. `@v0.2.0`) when you want to roll the consuming app forward.
+
+## Layout
 
 ```
 meryverse_core/
-├── js/                         # Shared frontend modules
-│   ├── design_system.css       # CSS-Variablen, Layout, Sidebar, Topbar
-│   ├── lock_screen.css         # Passwort-Dialog Styles
-│   ├── crypto.js               # AES-256-GCM, PBKDF2, Dual-Envelope
-│   ├── lock_screen.js          # Passwort-UI Flow (Load/Create)
-│   ├── export_utils.js         # Download: JSON, CSV, HTML, verschlüsselt
-│   └── ui_utils.js             # Formatierung, Toasts, DOM-Helfer
-│
-├── templates/                  # Wiederverwendbare HTML-Fragmente
-│   └── lock_screen.html        # Lock-Screen Template
-│
-├── python/                     # Python-Package
-│   ├── pyproject.toml          # pip install -e .
-│   └── meryverse_core/
-│       ├── __init__.py
-│       ├── assets.py           # CSS/JS/Template-Loader
-│       └── html_builder.py     # HTML-Assembler (Builder-Pattern)
-│
-└── README.md
+├── pyproject.toml              # Package metadata (name "meryverse-core")
+├── meryverse_core/             # Python module (import name with underscore)
+│   ├── __init__.py             # __version__
+│   ├── design.py               # mxh design tokens (colors, fonts, radii)
+│   ├── crypto.py               # placeholder — server-side crypto helpers
+│   ├── assets.py               # CSS/JS/template loader for offline generators
+│   └── html_builder.py         # Builder for self-contained HTML files
+├── js/                         # Frontend modules (loaded via assets.py)
+│   ├── design_system.css
+│   ├── lock_screen.{css,js}
+│   ├── crypto.js
+│   ├── export_utils.js
+│   └── ui_utils.js
+└── templates/
+    └── lock_screen.html
 ```
 
-## Einrichtung (pro Projekt)
+`pip` package name is `meryverse-core` (hyphen, PyPI convention); Python import
+name is `meryverse_core` (underscore).
 
-### Option A: Git Submodule (empfohlen)
-
-```bash
-cd dein-projekt/
-git submodule add https://github.com/Merlloyd/meryverse_core.git meryverse_core
-pip install -e meryverse_core/python/
-```
-
-### Option B: Symlink (lokal)
-
-```bash
-ln -s /pfad/zu/meryverse_core meryverse_core
-pip install -e meryverse_core/python/
-```
-
-## Verwendung
-
-### Vorher (alles in einer riesigen .py)
+## Quick start
 
 ```python
-# 800 Zeilen CSS/JS als String in jeder generate_*.py ...
-HTML = f"""<!DOCTYPE html>
-<style>
-:root {{ --bg: #0c3242; ... }}  /* 150 Zeilen CSS kopiert */
-/* Lock-Screen CSS kopiert */
-</style>
-<script>
-async function deriveKey(...) {{ ... }}  /* 200 Zeilen Crypto kopiert */
-</script>
-"""
+from meryverse_core import design
+
+# All tokens as a dict
+tokens = design.get_css_variables()       # {"bg": "#0c3242", ...}
+
+# Drop straight into a <style> block
+css_root = design.get_css_block()         # ":root {\n  --bg: #0c3242;\n  ...\n}"
 ```
 
-### Nachher
+For the legacy generators (CSS/JS bundling):
 
 ```python
 from meryverse_core.html_builder import HtmlBuilder
 from meryverse_core.assets import load_sheetjs
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
 html = (
     HtmlBuilder(title="Kettenauswertung", version="2.1")
-    .css("design_system", "lock_screen")         # Shared styles
-    .css_raw(MY_CUSTOM_CSS)                       # Projekt-spezifisch
-    .js("crypto", "lock_screen", "export_utils")  # Shared JS
-    .js_raw(load_sheetjs(SCRIPT_DIR))             # SheetJS aus Projektordner
-    .js_raw(MY_APP_JS)                            # Projekt-Logik
-    .body(MY_HTML_BODY)                           # Projekt-HTML
-    .write(os.path.join(SCRIPT_DIR, "output.html"))
+    .css("design_system", "lock_screen")
+    .js("crypto", "lock_screen", "export_utils", "ui_utils")
+    .js_raw(load_sheetjs(SCRIPT_DIR))
+    .body(MY_HTML_BODY)
+    .write("output.html")
 )
 ```
-
-## Module im Detail
-
-| Modul | Beschreibung | Genutzt von |
-|-------|-------------|-------------|
-| `design_system.css` | Farben, Fonts, Layout, Sidebar, Topbar | Alle 5 Apps |
-| `lock_screen.css` | Passwort-Dialog Styles | FTE, Ketten, Vergleich |
-| `crypto.js` | AES-256-GCM + PBKDF2 + Dual-Envelope v2 | FTE, Ketten, Vergleich |
-| `lock_screen.js` | Load/Create Flow mit Drag & Drop | FTE, Ketten, Vergleich |
-| `export_utils.js` | Blob-Download, CSV, JSON, verschlüsselt | Alle 5 Apps |
-| `ui_utils.js` | fmtEuro(), fmtDate(), Toasts, escHtml() | Alle 5 Apps |
-
-## Design-System Farben
-
-| Variable | Wert | Verwendung |
-|----------|------|-----------|
-| `--bg` | `#0c3242` | Hintergrund |
-| `--surface` | `#114B5F` | Karten, Sidebar |
-| `--accent` | `#1A936F` | Primär-Akzent |
-| `--accent2` | `#88D498` | Sekundär-Akzent |
-| `--pos` | `#88D498` | Positive Werte |
-| `--neg` | `#f87171` | Negative Werte |
-| `--warn` | `#fbbf24` | Warnungen |
-| `--text` | `#F3E9D2` | Haupttext |
