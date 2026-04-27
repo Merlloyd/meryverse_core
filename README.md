@@ -56,12 +56,21 @@ name is `meryverse_core` (underscore).
 ```python
 from meryverse_core import design
 
-# All tokens as a dict
-tokens = design.get_css_variables()       # {"bg": "#0c3242", ...}
+design.list_schemes()                              # ["meryverse", "vodafone"]
 
-# Drop straight into a <style> block
-css_root = design.get_css_block()         # ":root {\n  --bg: #0c3242;\n  ...\n}"
+# Default scheme = "meryverse"
+tokens = design.get_css_variables()                # {"bg": "#0c3242", ...}
+css_root = design.get_css_block()                  # ":root {\n  --bg: #0c3242;\n  ...\n}"
+
+# Pick a scheme at the call site
+css_root = design.get_css_block(scheme="vodafone")
 ```
+
+Both schemes share the same core contract (`bg`, `surface*`, `border*`,
+`accent*`, `pos`/`neg`/`warn`, `text*`, `radius*`, `font*`, `shadow`) so they
+are swappable. The Vodafone scheme additionally provides its secondary palette
+(`aqua`, `turq`, `violet`, `aubergine`, `spring`, `lemon`), tinted variants
+(`tint-*`) and the `brand-bar` gradient.
 
 For the legacy generators (CSS/JS bundling):
 
