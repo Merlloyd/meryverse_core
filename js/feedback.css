@@ -1,0 +1,201 @@
+/*
+ * Meryverse Feedback-Komponente — Styles
+ * ======================================
+ * Gehört zu meryverse_core/js/feedback.js. Nutzt die Design-System-Tokens
+ * (--surface, --accent2, --text …); fällt über @supports-freie Defaults
+ * auf sinnvolle Werte zurück, falls die Tokens auf einer Seite fehlen.
+ *
+ * Namespace-Präfix: .mxh-fb-*  (kollidiert nicht mit App-Styles).
+ * Status-Farben: offen = amber, erledigt = grün (analog Referenz-Pattern).
+ *
+ * Plan: plans/2026-05-31-feedback-kommentar-system.md — Schritt 3
+ */
+
+/* ── Hilfe-Markierungen (nur Admins sehen sie) ───────────────────────── */
+.mxh-fb-mark {
+  border-radius: 3px;
+  padding: 0 1px;
+  cursor: pointer;
+  background: rgba(251, 191, 36, 0.28);          /* amber */
+  border-bottom: 2px solid rgba(251, 191, 36, 0.9);
+  color: inherit;
+}
+.mxh-fb-mark.is-done {
+  background: rgba(136, 212, 152, 0.28);          /* grün */
+  border-bottom-color: rgba(136, 212, 152, 0.95);
+}
+
+/* ── Floating Action Button (globales Seiten-Feedback) ───────────────── */
+.mxh-fb-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-radius: 999px;
+  background: var(--surface2, #1a5d74);
+  color: var(--text, #F3E9D2);
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.mxh-fb-fab:hover {
+  background: var(--surface3, #1f6b85);
+  transform: translateY(-1px);
+}
+.mxh-fb-fab span:first-child { font-size: 16px; line-height: 1; }
+.mxh-fb-fab-label { font-weight: 600; }
+@media (max-width: 600px) {
+  .mxh-fb-fab { padding: 12px; }
+  .mxh-fb-fab-label { display: none; }   /* nur Icon auf kleinen Screens */
+}
+
+/* ── Modal (Freitext-Feedback) ───────────────────────────────────────── */
+.mxh-fb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 16px;
+}
+.mxh-fb-modal-card {
+  width: min(480px, 100%);
+  background: var(--surface, #114B5F);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));
+  padding: 18px 20px 20px;
+  color: var(--text, #F3E9D2);
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+}
+.mxh-fb-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.mxh-fb-modal-head h3 { margin: 0; font-size: 17px; }
+.mxh-fb-x {
+  background: none;
+  border: none;
+  color: var(--text3, rgba(198, 218, 191, 0.65));
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+.mxh-fb-x:hover { color: var(--text, #F3E9D2); }
+
+.mxh-fb-textarea,
+.mxh-fb-pop-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  background: var(--bg, #0c3242);
+  color: var(--text, #F3E9D2);
+  border: 1px solid var(--border, rgba(136, 212, 152, 0.15));
+  border-radius: var(--radius, 10px);
+  padding: 10px 12px;
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+  font-size: 14px;
+}
+.mxh-fb-textarea:focus,
+.mxh-fb-pop-textarea:focus {
+  outline: none;
+  border-color: var(--accent2, #88D498);
+}
+.mxh-fb-hint { min-height: 16px; font-size: 12px; color: var(--text3, rgba(198, 218, 191, 0.65)); margin-top: 6px; }
+
+.mxh-fb-modal-actions,
+.mxh-fb-pop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.mxh-fb-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius, 10px);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  background: transparent;
+  color: var(--text, #F3E9D2);
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+  font-size: 13px;
+  cursor: pointer;
+}
+.mxh-fb-btn:hover { background: var(--surface2, #1a5d74); }
+.mxh-fb-btn.primary {
+  background: var(--accent, #1A936F);
+  border-color: var(--accent, #1A936F);
+  color: #fff;
+  font-weight: 600;
+}
+.mxh-fb-btn.primary:hover { background: var(--accent2, #88D498); color: #0c3242; }
+.mxh-fb-btn.primary:disabled { opacity: 0.55; cursor: default; }
+.mxh-fb-btn.danger { border-color: var(--neg, #f87171); color: var(--neg, #f87171); }
+.mxh-fb-btn.danger:hover { background: rgba(248, 113, 113, 0.15); }
+
+/* ── Popups (Hilfe-Erstellung + Detail) ──────────────────────────────── */
+.mxh-fb-popup {
+  z-index: 9600;
+  width: 300px;
+  background: var(--surface, #114B5F);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-radius: var(--radius, 10px);
+  box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));
+  padding: 12px;
+  color: var(--text, #F3E9D2);
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+  font-size: 13px;
+}
+.mxh-fb-pop-quote {
+  font-style: italic;
+  color: var(--text2, #C6DABF);
+  border-left: 2px solid var(--accent2, #88D498);
+  padding-left: 8px;
+  margin-bottom: 8px;
+  max-height: 60px;
+  overflow: auto;
+}
+.mxh-fb-pop-status { font-weight: 600; margin-bottom: 6px; }
+.mxh-fb-pop-komm { margin-bottom: 6px; }
+.mxh-fb-pop-notiz {
+  font-size: 12px;
+  color: var(--text2, #C6DABF);
+  background: var(--bg, #0c3242);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+}
+.mxh-fb-pop-meta { font-size: 11px; color: var(--text3, rgba(198, 218, 191, 0.65)); }
+
+/* ── Toast / „Danke" ─────────────────────────────────────────────────── */
+.mxh-fb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 20px);
+  z-index: 9700;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-family: var(--font, 'IBM Plex Sans', sans-serif);
+  font-size: 14px;
+  color: #0c3242;
+  background: var(--accent2, #88D498);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+.mxh-fb-toast.is-error { background: var(--neg, #f87171); color: #fff; }
+.mxh-fb-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }

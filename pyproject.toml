@@ -1,6 +1,6 @@
 [project]
 name = "meryverse-core"
-version = "0.2.0"
+version = "0.3.0"
 description = "Shared utilities for Meryverse apps (design tokens, crypto helpers)"
 requires-python = ">=3.10"
 dependencies = []
