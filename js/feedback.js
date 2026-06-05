@@ -5,12 +5,16 @@
  * Wiederverwendbare Feedback-/Hilfe-Kommentar-Komponente für alle Meryverse-
  * Apps. Aktivierung pro App über `feedbackInit(config)`. Drei Modi:
  *
- *   (a) Hilfe-KommentarLayer  — Textmarkierung auf Hilfe-Seiten:
+ *   (a) Markierungs-Layer  — Textmarkierung in einem Container:
  *         mouseup-Selektion → Erstell-Popup → POST. Persistente
  *         amber/grün-Markierungen werden NUR gerendert, wenn config.isAdmin
  *         true ist (Design-Entscheidung #3). Nicht-Admins können markieren +
  *         absenden (transiente „Danke"-Bestätigung), sehen aber keine
- *         Highlights.
+ *         Highlights. Verallgemeinert über `marker:{containerId, kontext_typ,
+ *         anchorResolver?|anchorAttr?}`; `help:{containerId}` ist die
+ *         rückwärtskompatible Voreinstellung (kontext_typ='help', Anker =
+ *         nächste Überschriften-ID). Bsp. Inhalt: marker:{containerId:'stage',
+ *         kontext_typ:'infomaterial_content', anchorAttr:'data-fb-anchor'}.
  *   (b) Globaler Freitext-Button — feste Ecke, Modal „Feedback zu dieser
  *         Seite" (kontext_typ='page', anker=route).
  *   (c) feedbackForItem(kontext) — Freitext-Modal für ein Lied/Part
@@ -23,7 +27,8 @@
  *   isAdmin:   false,             // rendert persistente Hilfe-Markierungen
  *   route:     location.pathname, // Anker für Seiten-Feedback
  *   apiBase:   '',                // Origin-Präfix (Default: same-origin)
- *   help:      { containerId: 'hilfe-content' },  // aktiviert Modus (a)
+ *   help:      { containerId: 'hilfe-content' },  // Modus (a), Preset 'help'
+ *   marker:    { containerId, kontext_typ, anchorAttr },  // Modus (a), generisch
  *   pageButton:true,              // aktiviert Modus (b)
  * }
  *
@@ -104,10 +109,11 @@
     });
   }
 
-  function listHelpFeedback() {
+  function listMarkerFeedback() {
+    var typ = (CFG.marker && CFG.marker.kontext_typ) || "help";
     var url = api("/api/feedback")
       + "?app=" + encodeURIComponent(CFG.app_key)
-      + "&kontext_typ=help";
+      + "&kontext_typ=" + encodeURIComponent(typ);
     return fetch(url, { credentials: "same-origin" })
       .then(function (r) { return r.ok ? r.json() : { feedback: [] }; })
       .then(function (j) { return (j && j.feedback) || []; });
@@ -238,15 +244,32 @@
     });
   }
 
-  // ── Modus (a): Hilfe-KommentarLayer ───────────────────────────────────
-  function helpContainer() {
-    var id = CFG.help && CFG.help.containerId;
+  // ── Modus (a): Markierungs-Layer (Hilfe-Seiten ODER beliebiger Inhalt) ──
+  // Verallgemeinert: `CFG.marker = { containerId, kontext_typ, anchorResolver?,
+  // anchorAttr? }`. `help: { containerId }` ist die rückwärtskompatible
+  // Voreinstellung (kontext_typ='help', Anker = nächste Überschriften-ID).
+  function markerContainer() {
+    var id = CFG.marker && CFG.marker.containerId;
     return id ? document.getElementById(id) : null;
+  }
+
+  // Anker für eine Markierung bestimmen — eigener Resolver (Funktion),
+  // Daten-Attribut am nächsten Vorfahren (anchorAttr, z. B. 'data-fb-anchor'),
+  // oder Default (Hilfe-Seiten): die nächste Überschriften-ID.
+  function resolveAnchor(node) {
+    var m = CFG.marker || {};
+    if (typeof m.anchorResolver === "function") return m.anchorResolver(node);
+    if (m.anchorAttr) {
+      var elNode = node && node.nodeType === 3 ? node.parentNode : node;
+      var holder = elNode && elNode.closest ? elNode.closest("[" + m.anchorAttr + "]") : null;
+      return holder ? holder.getAttribute(m.anchorAttr) : null;
+    }
+    return findAnchorId(node);
   }
 
   // Nächste Überschriften-ID (toc-Anker) zum markierten Knoten finden.
   function findAnchorId(node) {
-    var container = helpContainer();
+    var container = markerContainer();
     if (!container) return null;
     // Alle Überschriften mit id in Dokumentreihenfolge sammeln.
     var headings = Array.prototype.slice.call(
@@ -270,7 +293,7 @@
 
   // Markierten Text innerhalb des Containers finden + mit <mark> umschließen.
   function highlightText(text, className, meta) {
-    var container = helpContainer();
+    var container = markerContainer();
     if (!container || !text) return [];
     var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
     var hits = [];
@@ -322,7 +345,7 @@
   function refreshMarks() {
     // Nur Admins sehen persistente Markierungen (Design-Entscheidung #3).
     if (!CFG.isAdmin) return;
-    listHelpFeedback().then(renderMarks).catch(function () { /* still */ });
+    listMarkerFeedback().then(renderMarks).catch(function () { /* still */ });
   }
 
   // Erstell-Popup nach Textmarkierung
@@ -342,7 +365,7 @@
       saveBtn.disabled = true;
       postFeedback({
         app_key: CFG.app_key,
-        kontext_typ: "help",
+        kontext_typ: (CFG.marker && CFG.marker.kontext_typ) || "help",
         anker: anchorId || null,
         markierter_text: selectedText,
         kommentar: komm,
@@ -426,15 +449,15 @@
     var text = sel.toString().trim();
     if (!text || text.length < 3) return;
     var range = sel.getRangeAt(0);
-    var container = helpContainer();
+    var container = markerContainer();
     if (!container || !container.contains(range.commonAncestorContainer)) return;
-    var anchorId = findAnchorId(range.startContainer);
+    var anchorId = resolveAnchor(range.startContainer);
     var rect = range.getBoundingClientRect();
     openCreatePopup(rect.left + rect.width / 2 - 150, rect.bottom + 8, text, anchorId);
   }
 
-  function mountHelpLayer() {
-    var container = helpContainer();
+  function mountMarkerLayer() {
+    var container = markerContainer();
     if (!container) return;
     container.addEventListener("mouseup", onMouseUp);
     // Klick auf eine Markierung → Detail (nur relevant für Admins)
@@ -443,7 +466,7 @@
         var mark = e.target.closest ? e.target.closest("." + STYLE_NS + "-mark") : null;
         if (!mark) return;
         var id = Number(mark.dataset.fbId);
-        listHelpFeedback().then(function (items) {
+        listMarkerFeedback().then(function (items) {
           var it = items.find(function (x) { return x.id === id; });
           if (it) openDetailPopup(mark, it);
         });
@@ -466,14 +489,19 @@
       route: (typeof location !== "undefined" ? location.pathname : ""),
       apiBase: "",
       help: null,
+      marker: null,
       pageButton: false,
     }, config || {});
     if (!CFG.app_key) {
       console.warn("[feedback] feedbackInit ohne app_key — abgebrochen.");
       return;
     }
+    // Rückwärtskompatibel: help: {containerId} → Marker mit kontext_typ 'help'.
+    if (!CFG.marker && CFG.help && CFG.help.containerId) {
+      CFG.marker = { containerId: CFG.help.containerId, kontext_typ: "help" };
+    }
     var start = function () {
-      if (CFG.help && CFG.help.containerId) mountHelpLayer();
+      if (CFG.marker && CFG.marker.containerId) mountMarkerLayer();
       if (CFG.pageButton) mountPageButton();
     };
     if (document.readyState === "loading") {
