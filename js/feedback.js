@@ -224,20 +224,27 @@
     document.body.appendChild(btn);
   }
 
-  // ── Modus (c): Feedback zu einem Lied / Part ──────────────────────────
+  // ── Modus (c): Feedback zu einem Element (Lied/Part/beliebiger Inhalt) ──
   function feedbackForItem(kontext) {
-    // kontext: { kontext_typ:'song'|'part', anker:<name>, label?:<anzeige> }
+    // kontext: { kontext_typ:'song'|'part'|…, anker:<name>, label?:<anzeige>,
+    //            title?, placeholder?, markierter_text? }
+    // title/placeholder überschreiben die Lied/Part-Wortwahl (z. B. für
+    // Info-Material-Inhalte); markierter_text bedient Kontext-Typen, deren
+    // Backend-Validierung einen markierten Text verlangt — nötig für
+    // iframe-Inhalte, in denen die Markierungs-Ebene nicht greifen kann.
     var typ = (kontext && kontext.kontext_typ) || "part";
     var anker = kontext && kontext.anker;
     var label = (kontext && kontext.label) || anker || (typ === "song" ? "Lied" : "Part");
     openTextModal({
-      title: "Feedback zu „" + label + "“",
-      placeholder: "Dein Hinweis zu diesem " + (typ === "song" ? "Lied" : "Part") + " …",
+      title: (kontext && kontext.title) || "Feedback zu „" + label + "“",
+      placeholder: (kontext && kontext.placeholder) ||
+        "Dein Hinweis zu diesem " + (typ === "song" ? "Lied" : "Part") + " …",
       onSubmit: function (text) {
         return postFeedback({
           app_key: CFG.app_key,
           kontext_typ: typ,
           anker: anker || null,
+          markierter_text: (kontext && kontext.markierter_text) || undefined,
           kommentar: text,
         });
       },
