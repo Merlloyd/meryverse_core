@@ -1,0 +1,47 @@
+/* ════════════════════════════════════════════════════════════════
+ * meryverse_core — Modal-Komponente (geteilte Popups)
+ * Alle Selektoren auf `.mxh-modal-*` gescoped, damit nichts mit der
+ * konsumierenden App kollidiert. Nutzt deren Design-Tokens (var(--surface) …)
+ * mit dunklen Meryverse-Fallbacks, falls die Tokens fehlen.
+ * ════════════════════════════════════════════════════════════════ */
+.mxh-modal-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: rgba(6, 24, 33, 0.72);
+}
+.mxh-modal-overlay[hidden] { display: none; }
+
+.mxh-modal-card {
+  width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+  background: var(--surface, #114B5F);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-radius: 14px; padding: 20px 22px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  color: var(--text, #F3E9D2);
+  font-family: var(--font, 'IBM Plex Sans', 'Segoe UI', sans-serif);
+}
+.mxh-modal-card.mxh-modal-wide { max-width: 760px; }
+
+.mxh-modal-title { margin: 0 0 12px; font-size: 1.05rem; color: var(--text, #F3E9D2); }
+.mxh-modal-msg { font-size: 0.9rem; color: var(--text2, #C6DABF); white-space: pre-wrap; line-height: 1.45; }
+.mxh-modal-label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text2, #C6DABF); }
+
+.mxh-modal-input {
+  width: 100%; box-sizing: border-box; padding: 8px 10px;
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28)); border-radius: 8px;
+  font-family: var(--font, sans-serif); font-size: 0.9rem;
+}
+.mxh-modal-input:focus { border-color: var(--accent2, #88D498); outline: none; }
+.mxh-modal-err { margin-top: 8px; font-size: 0.82rem; color: #f87171; }
+
+.mxh-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.mxh-modal-btn {
+  font-family: var(--font, sans-serif); font-size: 0.85rem; cursor: pointer;
+  border-radius: 8px; padding: 8px 16px;
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+}
+.mxh-modal-cancel { background: var(--surface2, #1a5d74); color: var(--text2, #C6DABF); }
+.mxh-modal-ok { background: var(--accent, #1A936F); color: #fff; border-color: var(--accent, #1A936F); }
+.mxh-modal-ok.mxh-modal-danger { background: #ef4444; border-color: #ef4444; }
+.mxh-modal-ok.mxh-modal-danger:hover { background: #dc2626; }
