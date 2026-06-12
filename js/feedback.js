@@ -16,7 +16,11 @@
  *         nächste Überschriften-ID). Bsp. Inhalt: marker:{containerId:'stage',
  *         kontext_typ:'infomaterial_content', anchorAttr:'data-fb-anchor'}.
  *   (b) Globaler Freitext-Button — feste Ecke, Modal „Feedback zu dieser
- *         Seite" (kontext_typ='page', anker=route).
+ *         Seite" (Default: kontext_typ='page', anker=route). Statt `true`
+ *         akzeptiert pageButton auch ein Objekt {kontext_typ, ankerResolver}
+ *         — z. B. Info-Material: {kontext_typ:'infomaterial_cluster',
+ *         ankerResolver:()=>'c7s12'} (Anker wird je Klick frisch aufgelöst,
+ *         weil sich die Folie ändert).
  *   (c) feedbackForItem(kontext) — Freitext-Modal für ein Lied/Part
  *         (kontext_typ='song'|'part').
  *
@@ -28,9 +32,16 @@
  *   route:     location.pathname, // Anker für Seiten-Feedback
  *   apiBase:   '',                // Origin-Präfix (Default: same-origin)
  *   help:      { containerId: 'hilfe-content' },  // Modus (a), Preset 'help'
- *   marker:    { containerId, kontext_typ, anchorAttr },  // Modus (a), generisch
- *   pageButton:true,              // aktiviert Modus (b)
+ *   marker:    { containerId, kontext_typ, anchorAttr,
+ *                fallback: { kontext_typ, ankerResolver } },  // Modus (a)
+ *   pageButton:true | { kontext_typ, ankerResolver },  // Modus (b)
  * }
+ *
+ * marker.fallback (optional): greift, wenn die Anker-Auflösung NICHT trifft
+ * (Markierung außerhalb eines [anchorAttr]-Elements, z. B. Folientitel) —
+ * statt anker:null mit dem Marker-Kontext zu senden, geht das Feedback mit
+ * fallback.kontext_typ + fallback.ankerResolver() raus. Ohne fallback
+ * bleibt das bisherige Verhalten (anker:null) unverändert.
  *
  * Anker auf Hilfe-Seiten = die nächste Überschriften-ID (toc-Extension),
  * NICHT <section id>. Quelle/Plan:
@@ -197,6 +208,23 @@
   }
 
   // ── Modus (b): globaler Seiten-Feedback-Button ────────────────────────
+  // Kontext des Buttons bestimmen: Default 'page' + Route; per
+  // pageButton-Objekt überschreibbar ({kontext_typ, ankerResolver}) —
+  // der Resolver läuft je Klick, weil sich der Anker (z. B. die aktuell
+  // sichtbare Folie) zwischen zwei Klicks ändern kann.
+  function pageButtonContext() {
+    var pb = CFG.pageButton;
+    var typ = "page";
+    var anker = CFG.route || location.pathname;
+    if (pb && typeof pb === "object") {
+      if (pb.kontext_typ) typ = pb.kontext_typ;
+      if (typeof pb.ankerResolver === "function") {
+        try { anker = pb.ankerResolver() || anker; } catch (e) { /* Default */ }
+      }
+    }
+    return { kontext_typ: typ, anker: anker };
+  }
+
   function mountPageButton() {
     if (document.getElementById(STYLE_NS + "-page-btn")) return;
     var btn = el("button", {
@@ -212,10 +240,11 @@
         title: "Feedback zu dieser Seite",
         placeholder: "Was möchtest du uns zu dieser Seite mitteilen?",
         onSubmit: function (text) {
+          var ctx = pageButtonContext();
           return postFeedback({
             app_key: CFG.app_key,
-            kontext_typ: "page",
-            anker: CFG.route || location.pathname,
+            kontext_typ: ctx.kontext_typ,
+            anker: ctx.anker,
             kommentar: text,
           });
         },
@@ -272,6 +301,23 @@
       return holder ? holder.getAttribute(m.anchorAttr) : null;
     }
     return findAnchorId(node);
+  }
+
+  // Kontext einer Markierung bestimmen: regulär = Marker-Kontext + Anker.
+  // Trifft die Anker-Auflösung NICHT (anchorId null — Markierung außerhalb
+  // jedes [anchorAttr]-Elements, z. B. ein Folientitel) UND ist ein
+  // marker.fallback konfiguriert, geht das Feedback stattdessen mit dem
+  // Fallback-Kontext raus. Ohne fallback: bisheriges Verhalten (anker:null).
+  function markerContext(anchorId) {
+    var m = CFG.marker || {};
+    if (!anchorId && m.fallback && m.fallback.kontext_typ) {
+      var fa = null;
+      if (typeof m.fallback.ankerResolver === "function") {
+        try { fa = m.fallback.ankerResolver(); } catch (e) { /* null */ }
+      }
+      return { kontext_typ: m.fallback.kontext_typ, anker: fa || null };
+    }
+    return { kontext_typ: m.kontext_typ || "help", anker: anchorId || null };
   }
 
   // Nächste Überschriften-ID (toc-Anker) zum markierten Knoten finden.
@@ -370,10 +416,11 @@
       var komm = ta.value.trim();
       if (!komm) { ta.focus(); return; }
       saveBtn.disabled = true;
+      var ctx = markerContext(anchorId);
       postFeedback({
         app_key: CFG.app_key,
-        kontext_typ: (CFG.marker && CFG.marker.kontext_typ) || "help",
-        anker: anchorId || null,
+        kontext_typ: ctx.kontext_typ,
+        anker: ctx.anker,
         markierter_text: selectedText,
         kommentar: komm,
       }).then(function () {
