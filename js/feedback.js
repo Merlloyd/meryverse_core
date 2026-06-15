@@ -423,6 +423,7 @@
         anker: ctx.anker,
         markierter_text: selectedText,
         kommentar: komm,
+        route: CFG.route,
       }).then(function () {
         closeCreatePopup();
         toast("Danke für dein Feedback!");
