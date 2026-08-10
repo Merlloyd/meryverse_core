@@ -507,6 +507,16 @@
     var container = markerContainer();
     if (!container || !container.contains(range.commonAncestorContainer)) return;
     var anchorId = resolveAnchor(range.startContainer);
+    // Ankerpflicht (v0.7.0): Wer `marker.ankerPflicht` setzt, sagt damit,
+    // dass eine Rückmeldung ohne Bezugspunkt für ihn wertlos ist — dann
+    // lieber gar kein Popup als ein Datensatz, der später auf nichts zeigt.
+    // Greift nur, wenn auch kein Fallback konfiguriert ist; mit Fallback
+    // bekommt die Markierung ja einen (gröberen) Anker.
+    var mk = CFG.marker || {};
+    if (!anchorId && mk.ankerPflicht && !(mk.fallback && mk.fallback.kontext_typ)) {
+      toast(mk.ankerHinweis || "Bitte innerhalb eines Inhalts markieren.");
+      return;
+    }
     var rect = range.getBoundingClientRect();
     openCreatePopup(rect.left + rect.width / 2 - 150, rect.bottom + 8, text, anchorId);
   }
