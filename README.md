@@ -39,6 +39,7 @@ meryverse_core/
 │   ├── assets.py               # CSS/JS/template loader for offline generators
 │   └── html_builder.py         # Builder for self-contained HTML files
 ├── js/                         # Frontend modules (loaded via assets.py)
+│   ├── tokens.css              # generated from design.py (portal: /core/tokens.css)
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -64,7 +65,15 @@ css_root = design.get_css_block()                  # ":root {\n  --bg: #0c3242;\
 
 # Pick a scheme at the call site
 css_root = design.get_css_block(scheme="vodafone")
+
+# Static token stylesheet for pages without a Python render step
+# (the portal serves it as /core/tokens.css, vendored via sync-core-assets.sh)
+css_file = design.get_tokens_css()                 # == js/tokens.css
 ```
+
+`js/tokens.css` is **generated** from `design.py` — regenerate with
+`python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
+fails if the file is stale.
 
 Both schemes share the same core contract (`bg`, `surface*`, `border*`,
 `accent*`, `pos`/`neg`/`warn`, `text*`, `radius*`, `font*`, `shadow`) so they

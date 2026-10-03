@@ -37,6 +37,7 @@ meryverse_core/                  Paket-Wurzel (pip-name: meryverse-core)
 │   ├── assets.py                CSS/JS/Template-Loader
 │   └── crypto.py                Stub (server-seitige AES-Helfer)
 ├── js/                          Frontend-Module (vom Loader gelesen)
+│   ├── tokens.css               GENERIERT aus design.py (Portal: /core/tokens.css)
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js                AES-256-GCM + PBKDF2 + Dual-Envelope v2
@@ -59,6 +60,10 @@ API:
 - `list_schemes() → ["meryverse", "vodafone"]`
 - `get_css_variables(scheme="meryverse") → dict[str, str]`
 - `get_css_block(scheme="meryverse") → str`   (`":root { --bg: …; }"`)
+- `get_tokens_css(scheme="meryverse") → str`  Inhalt von `js/tokens.css` (seit 0.8.0;
+  Kopfkommentar + `get_css_block`). Das Portal lädt die Datei als `/core/tokens.css`
+  vor allen anderen Stylesheets — Plan `plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md`
+  (Workspace), Phase 0.
 
 ### 2.2 `assets.py`
 

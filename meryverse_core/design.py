@@ -45,6 +45,9 @@ SCHEMES: dict[str, dict[str, str]] = {
         # Typography
         "font":       "'IBM Plex Sans','Segoe UI',sans-serif",
         "font-mono":  "'IBM Plex Mono','Courier New',monospace",
+        # Kurzname, den das Portal (app.meryverse.de) seit jeher nutzt —
+        # gleicher Wert wie font-mono, damit beide Namen funktionieren.
+        "mono":       "'IBM Plex Mono','Courier New',monospace",
         # Effects
         "shadow":     "0 4px 28px rgba(0,0,0,0.55)",
     },
@@ -120,3 +123,29 @@ def get_css_block(scheme: str = DEFAULT_SCHEME) -> str:
     """Return a `:root { ... }` CSS block ready to embed in a <style> tag."""
     lines = [f"  --{name}: {value};" for name, value in get_css_variables(scheme).items()]
     return ":root {\n" + "\n".join(lines) + "\n}"
+
+
+# Statische Token-Datei für Seiten, die keinen Python-Renderschritt haben
+# (Portal-Templates laden sie als /core/tokens.css). Sie wird aus SCHEMES
+# erzeugt, damit es genau eine Quelle der Wahrheit gibt — ein Test prüft,
+# dass js/tokens.css und get_tokens_css() übereinstimmen.
+TOKENS_CSS_HEADER = """/* meryverse_core — Design-Tokens (Scheme "meryverse")
+ *
+ * GENERIERT aus meryverse_core/design.py — nicht von Hand ändern.
+ * Neu erzeugen:  python -m meryverse_core.design > js/tokens.css
+ *
+ * Wird im Portal als /core/tokens.css VOR allen anderen Stylesheets geladen.
+ * Seiten dürfen einzelne Tokens danach überschreiben (z. B. der Spiele-
+ * Beamer); alles andere kommt aus dieser Datei.
+ */
+"""
+
+
+def get_tokens_css(scheme: str = DEFAULT_SCHEME) -> str:
+    """Return the content of the static token stylesheet (js/tokens.css)."""
+    return TOKENS_CSS_HEADER + get_css_block(scheme) + "\n"
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import sys
+    sys.stdout.write(get_tokens_css(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_SCHEME))
