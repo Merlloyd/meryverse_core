@@ -37,7 +37,8 @@
 /* `hidden` muss gewinnen: die display-Werte unten würden es sonst aufheben
    (gefunden an #btn-back im Sammlungs-Admin, per JS über hidden geschaltet). */
 .mxh-btn[hidden], .mxh-chip[hidden], .mxh-input[hidden], .mxh-switch[hidden],
-.mxh-check[hidden], .mxh-field[hidden], .mxh-linkbtn[hidden] { display: none; }
+.mxh-check[hidden], .mxh-field[hidden], .mxh-linkbtn[hidden], .mxh-tabs[hidden], .mxh-tab[hidden],
+.mxh-seg[hidden], .mxh-seg-btn[hidden] { display: none; }
 
 /* ── Knöpfe ────────────────────────────────────────────────────────────── */
 .mxh-btn {
@@ -229,7 +230,8 @@ select.mxh-input {
   transition: background-color 0.15s, color 0.15s;
 }
 .mxh-seg-btn:hover { color: var(--text); background: var(--surface2); }
-.mxh-seg-btn[aria-pressed="true"], .mxh-seg-btn[aria-selected="true"], .mxh-seg-btn[aria-current="page"] {
+.mxh-seg-btn[aria-pressed="true"], .mxh-seg-btn[aria-selected="true"],
+.mxh-seg-btn[aria-current="page"], .mxh-seg-btn[aria-current="step"] {
   color: var(--on-accent); background: var(--accent2); font-weight: 600;
 }
 .mxh-seg-btn:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
