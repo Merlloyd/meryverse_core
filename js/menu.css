@@ -28,6 +28,9 @@
 .mxh-menu-item:hover, .mxh-menu-item.is-open, .mxh-menu-item.is-akt, .mxh-menu-item:focus-visible {
   background: var(--surface, #114B5F);
 }
+/* Fokusring selbst setzen: das Mitsing-Offline-Paket hat die Basis-Regeln
+   aus tokens.css nicht (sonst Browser-Standardring). */
+.mxh-menu-item:focus-visible, .mxh-menu-pin:focus-visible { outline: 2px solid var(--accent2, #88D498); outline-offset: -2px; }
 /* Mit der Tastatur markierter Eintrag (Suche: Fokus bleibt im Suchfeld). */
 .mxh-menu-item.is-akt { outline: 1px solid var(--accent2, #88D498); outline-offset: -1px; }
 .mxh-menu-item:disabled { opacity: 0.4; cursor: default; }
