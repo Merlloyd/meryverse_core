@@ -44,6 +44,12 @@
  * `outline: none` abschalten (Wächter tests/test_ui_basis.py im Website-Repo). */
 :focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
 
+/* Textfelder zeigen den Ring nur bei Tastaturbedienung (Betreiber-Entscheidung
+ * 2026-10-04): Chrome wertet :focus-visible dort auch nach Mausklick und bei
+ * autofocus als „sichtbar". js/fokus.js setzt html.mxh-maus, bis mit Tab
+ * navigiert wird; ohne Skript fehlt die Klasse und der Ring bleibt immer an. */
+html.mxh-maus :is(input:not([type=checkbox], [type=radio], [type=range], [type=button], [type=submit], [type=reset], [type=file], [type=color]), textarea, select, [contenteditable]):focus-visible { outline-style: none; }
+
 /* Kalender-Symbol nativer Datums-/Zeitfelder: Hell zeichnet Chrome es schon
  * wegen color-scheme: dark — KEIN filter: invert(), der dreht es zurück ins
  * Dunkle und macht es auf dunklem Grund unsichtbar (nachgemessen 2026-10-04). */

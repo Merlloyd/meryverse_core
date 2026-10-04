@@ -70,3 +70,13 @@ def test_kalendersymbol_nicht_invertiert():
     regel = css[css.index("::-webkit-calendar-picker-indicator"):]
     regel = regel[:regel.index("}")]
     assert "invert" not in regel
+
+
+def test_textfeld_ring_nur_bei_tastatur():
+    # Der Ring in Textfeldern wird nur im Maus-Modus (html.mxh-maus, gesetzt
+    # von js/fokus.js) abgeschaltet — nie pauschal.
+    css = design.PORTAL_BASIS_CSS
+    assert "html.mxh-maus :is(input:not(" in css
+    fokus = (ROOT / "js" / "fokus.js").read_text(encoding="utf-8")
+    assert "classList.add('mxh-maus')" in fokus
+    assert "e.key === 'Tab'" in fokus
