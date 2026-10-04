@@ -54,3 +54,16 @@ def test_kopf_hoehe_nur_ueber_var_kopf():
     m = re.search(r"\.portal-kopf \{([^}]*)\}", OHNE_KOMMENTARE)
     assert "min-height: var(--kopf)" in m.group(1)
     assert not re.search(r"(?<![-\w])height\s*:\s*\d", m.group(1))
+
+
+def test_kopf_richtet_sich_nach_eigener_breite():
+    # Kompakt-Form und Mitte-Umbruch hängen an der Breite des Kopfs
+    # (@container), nicht des Fensters — sonst überlappen Admin (Seitenleiste)
+    # und Seiten mit Mitte-Slot zwischen 761 und 1300 px (gemessen 2026-10-04).
+    css = (ROOT / "js" / "frame.css").read_text(encoding="utf-8")
+    kopf = css[css.index(".portal-kopf {"):]
+    kopf = kopf[:kopf.index("}")]
+    assert "container-type: inline-size" in kopf
+    assert "flex-wrap: wrap" in kopf
+    assert "@container (max-width: 820px)" in css
+    assert ".kopf-mitte ~ .kopf-rechts" in css

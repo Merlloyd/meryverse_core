@@ -29,9 +29,14 @@
      Hintergründe ab 40, Admin-Seitenleiste 90, Core-Modal 3000). */
   position: sticky; top: 0; z-index: 30;
   box-sizing: border-box;
-  display: flex; align-items: center; gap: 10px 16px;
+  /* Container: Die Kopf-Regeln unten richten sich nach der Breite des KOPFS,
+     nicht des Fensters (Admin: Seitenleiste nimmt 260 px weg; Seiten mit
+     Mitte-Slot brauchen mehr Platz). Umbruch statt Überlappen, falls doch
+     etwas nicht passt (nachgemessen 2026-10-04: 11 Seiten × 14 Breiten). */
+  container-type: inline-size;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
   min-height: var(--kopf);
-  padding: 0 var(--seitenrand);
+  padding: 8px var(--seitenrand);
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -88,14 +93,27 @@
   font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--bg);
 }
 .kopf-kurz { display: none; }
-@media (max-width: 760px) {
-  .portal-kopf { flex-wrap: wrap; padding: 8px var(--seitenrand); }
-  .kopf-links { flex: 1 1 0; }
-  .kopf-mitte { order: 3; flex-basis: 100%; }
-  .kopf-rechts { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+/* Kompakt-Form (Texte weg, Symbole): sobald der Kopf selbst schmal ist. */
+@container (max-width: 820px) {
   .kopf-lang, .kopf-user-name, .kopf-unter { display: none; }
   .kopf-kurz { display: block; }
   .kopf-knopf { padding: 6px 9px; }
+}
+/* Mit Mitte-Slot (Lernkarten, Spiele) braucht die Mitte den Platz: rechts
+   schon früher kompakt. Ist es dann noch zu eng, bekommt die Mitte eine
+   eigene Zeile (hier generisch ab 700 px; breitere Mitten setzen in der
+   App-CSS einen eigenen @container-Wert, z. B. lernkarten.css). */
+@container (max-width: 1220px) {
+  .kopf-mitte ~ .kopf-rechts .kopf-lang,
+  .kopf-mitte ~ .kopf-rechts .kopf-user-name { display: none; }
+  .kopf-mitte ~ .kopf-rechts .kopf-kurz { display: block; }
+}
+@container (max-width: 700px) {
+  .kopf-mitte { order: 3; flex-basis: 100%; }
+}
+@media (max-width: 760px) {
+  .kopf-links { flex: 1 1 0; }
+  .kopf-rechts { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 }
 @media (max-width: 420px) {
   .kopf-wortmarke { display: none; }
