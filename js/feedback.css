@@ -33,7 +33,7 @@
   position: fixed;
   right: 18px;
   bottom: 72px;
-  z-index: 9000;
+  z-index: var(--z-fab, 900);   /* unter jedem Dialog (UI-Kit Phase 4) */
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -62,7 +62,7 @@
 .mxh-fb-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9500;
+  z-index: var(--z-modal, 3000);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,7 +152,7 @@
 
 /* ── Popups (Hilfe-Erstellung + Detail) ──────────────────────────────── */
 .mxh-fb-popup {
-  z-index: 9600;
+  z-index: var(--z-modal, 3000);
   width: 300px;
   background: var(--surface, #114B5F);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
@@ -190,17 +190,20 @@
   left: 50%;
   bottom: 24px;
   transform: translate(-50%, 20px);
-  z-index: 9700;
-  padding: 11px 20px;
-  border-radius: 999px;
+  z-index: var(--z-toast, 3500);
+  /* Gleiche Form wie mxhToast (toast.css) — feedback läuft aber auch ohne sie. */
+  box-sizing: border-box; max-width: min(460px, calc(100vw - 32px));
+  padding: 10px 16px;
+  border: 1px solid var(--accent2, #88D498);
+  border-radius: var(--radius, 10px);
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
-  font-size: 14px;
-  color: #0c3242;
-  background: var(--accent2, #88D498);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  font-size: 0.9rem;
+  color: var(--text, #F3E9D2);
+  background: var(--surface2, #1a5d74);
+  box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
 }
-.mxh-fb-toast.is-error { background: var(--neg, #f87171); color: #fff; }
+.mxh-fb-toast.is-error { border-color: var(--neg, #f87171); color: var(--neg, #f87171); }
 .mxh-fb-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }

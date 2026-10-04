@@ -43,6 +43,8 @@ meryverse_core/
 │   ├── fokus.js                # html.mxh-maus: ring in text fields only via keyboard
 │   ├── frame.css               # page frame: footer, containers, table (portal: /static/core/)
 │   ├── controls.css            # buttons and fields .mxh-btn/.mxh-input … (portal: /static/core/)
+│   ├── modal.{css,js}          # mxhModal alert/confirm/prompt/open (portal: /core/modal.*)
+│   ├── toast.{css,js}          # mxhToast(text, {kind, ms}) (portal: /static/core/)
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -91,6 +93,14 @@ Since 0.12.0 `js/controls.css` carries **buttons and fields** (UI-Kit phase 3): 
 `.mxh-chip`, `.mxh-linkbtn`, `.mxh-input`, labels/hints/errors, switch, file. Only `.mxh-` selectors,
 only token colors; `modal.css`/`feedback.css` use the same values. Portal: `/static/core/controls.css`
 right after `frame.css`.
+
+Since 0.15.0 (UI-Kit phase 4, popups and feedback): `tokens.css` carries one **layer scale**
+`--z-fab 900 < --z-overlay 1000 < --z-modal 3000 < --z-toast 3500 < --z-tooltip 4000`, plus
+`--overlay` and `--shadow-pop`. `mxhModal` traps Tab inside the top dialog, returns focus to the
+trigger, names the dialog (`aria-labelledby`) and offers a close button `.mxh-modal-x`
+(`open(html, {x: true})`); `confirm(…, {danger: true})` focuses *Cancel*. `js/toast.{css,js}`
+provide `mxhToast(text, {kind: 'ok'|'err'|'info', ms})`, stacked bottom centre (raise with
+`--toast-unten`). The feedback button sits below every dialog. Tests: `tests/test_popups.py`.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`

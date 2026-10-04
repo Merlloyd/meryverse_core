@@ -1,0 +1,29 @@
+/* ════════════════════════════════════════════════════════════════
+ * meryverse_core — Toast (kurze Rückmeldung), UI-Kit Phase 4, seit 0.15.0
+ * Gehört zu toast.js. Unten in der Mitte gestapelt, über Dialogen (--z-toast).
+ * Apps mit fester Leiste unten (Player, Handy-Navigation) heben den Stapel mit
+ *   :root { --toast-unten: 96px; }
+ * ════════════════════════════════════════════════════════════════ */
+.mxh-toast-host {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--toast-unten, 24px) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-toast, 3500);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: max-content; max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.mxh-toast {
+  box-sizing: border-box; max-width: min(460px, calc(100vw - 32px));
+  padding: 10px 16px;
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  border: 1px solid var(--accent2, #88D498); border-radius: var(--radius, 10px);
+  box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));
+  font: 400 0.9rem/1.4 var(--font, 'IBM Plex Sans', sans-serif);
+  overflow-wrap: break-word; white-space: pre-line; text-align: center;
+  cursor: pointer; pointer-events: auto;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.mxh-toast.is-sichtbar { opacity: 1; transform: none; }
+.mxh-toast--info { border-color: var(--border2, rgba(136, 212, 152, 0.28)); }
+.mxh-toast--err { border-color: var(--neg, #f87171); color: var(--neg, #f87171); }
