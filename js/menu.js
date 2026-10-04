@@ -531,8 +531,12 @@
     // Tastatur: Enter, Leertaste, Alt+↓/↑, F4 öffnen; Pfeile ohne Alt bleiben
     // nativ (Wert direkt umschalten), Buchstaben ebenso.
     sel.addEventListener('keydown', function (e) {
+      // ↓/↑ öffnen die Liste (Muster „Combobox“). Ohne das fielen sie an den
+      // Browser durch: macOS öffnet dann die NATIVE Liste (genau die, die F8
+      // abschafft), Windows springt den Wert ohne Liste um (lokale Prüfung
+      // 2026-10-04).
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'F4' ||
-          (e.altKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp'))) {
+          e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault(); liste_oeffnen(sel);
       }
     });
