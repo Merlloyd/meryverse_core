@@ -90,6 +90,7 @@
   min-height: 32px; padding: 0 12px;
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
   color: var(--text2); text-decoration: none; white-space: nowrap;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis;   /* lange Namen sprengen sonst die Zeile */
   background: transparent; border: 1px solid var(--border); border-radius: var(--radius-pill);
   cursor: pointer;
   transition: background-color 0.15s, border-color 0.15s, color 0.15s;
@@ -100,6 +101,14 @@
   background: color-mix(in srgb, var(--accent2) 14%, transparent);
 }
 .mxh-chip:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+/* Größere Pille für Touch-Apps (Schnellwahl, Zeitraum-Umschalter): 36 px,
+   Normalschrift statt Mono-Versalien-Optik. Lange Namen brechen um (ganzer
+   Projektname lesbar) statt abgeschnitten zu werden. */
+.mxh-chip--gross {
+  min-height: var(--ctl-h-sm); padding: 6px 14px;
+  font-family: var(--font); font-size: 0.9rem; letter-spacing: 0; line-height: 1.25;
+  white-space: normal; text-align: center; justify-content: center;
+}
 
 /* ── Felder ────────────────────────────────────────────────────────────── */
 .mxh-input {
