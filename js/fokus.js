@@ -139,3 +139,47 @@
 
   window.mxhFokusfalle = { abgleichen: abgleichen };
 })();
+
+/* ── Tabs per Tastatur (UI-Kit Phase 5, seit 0.20.0) ─────────────────────
+ * Für jedes [role=tablist]: ←/→ (bzw. ↑/↓ bei aria-orientation=vertical),
+ * Home und End wechseln den Fokus zwischen den Tabs und lösen sie aus (Klick
+ * — die App schaltet wie bei der Maus um). Nur der gewählte Tab steht in der
+ * Tab-Reihenfolge (roving tabindex); Klick setzt aria-selected selbst, falls
+ * die App es nicht tut.
+ */
+(function () {
+  function tabs(liste) {
+    return Array.prototype.filter.call(liste.querySelectorAll('[role=tab]'), function (t) {
+      return t.closest('[role=tablist]') === liste && !t.disabled && t.getClientRects().length;
+    });
+  }
+  function ordnen(liste) {
+    var alle = tabs(liste); if (!alle.length) return;
+    var akt = alle.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || alle[0];
+    alle.forEach(function (t) { t.tabIndex = t === akt ? 0 : -1; });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[role=tab]');
+    var liste = t && t.closest('[role=tablist]');
+    if (!liste) return;
+    tabs(liste).forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+    ordnen(liste);
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target.closest && e.target.closest('[role=tab]');
+    var liste = t && t.closest('[role=tablist]');
+    if (!liste) return;
+    var senk = liste.getAttribute('aria-orientation') === 'vertical';
+    var vor = senk ? 'ArrowDown' : 'ArrowRight', zurueck = senk ? 'ArrowUp' : 'ArrowLeft';
+    var alle = tabs(liste), i = alle.indexOf(t), n = -1;
+    if (e.key === vor) n = (i + 1) % alle.length;
+    else if (e.key === zurueck) n = (i - 1 + alle.length) % alle.length;
+    else if (e.key === 'Home') n = 0;
+    else if (e.key === 'End') n = alle.length - 1;
+    if (n < 0) return;
+    e.preventDefault();
+    alle[n].focus(); alle[n].click();
+  });
+  function alle() { Array.prototype.forEach.call(document.querySelectorAll('[role=tablist]'), ordnen); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', alle); else alle();
+})();

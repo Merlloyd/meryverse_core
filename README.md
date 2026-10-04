@@ -135,6 +135,12 @@ browser list — mouse, touch, Enter/Space/Alt+↓/F4. The select itself stays t
 (classes, sizes, value, `change` event untouched); new selects are picked up by a
 MutationObserver. Opt out with `data-mxh-nativ`. Item type `{group: 'Heading'}` added.
 
+Since 0.20.0 `controls.css` also has **tabs, segmented controls and accordions** — active state
+only via ARIA: `.mxh-tabs[role=tablist] > .mxh-tab[role=tab][aria-selected]` (mono caps, accent2
+underline), `.mxh-seg > .mxh-seg-btn[aria-pressed|aria-selected]` (light green when active, like
+the primary button), `details.mxh-akkordeon > summary` (one caret). `fokus.js` gives every
+`[role=tablist]` arrow/Home/End navigation with roving tabindex and syncs `aria-selected` on click.
+
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
 fails if the file is stale.
