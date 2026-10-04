@@ -20,7 +20,9 @@ def _selektoren():
 
 def test_rahmen_bausteine_vorhanden():
     for teil in ("--kopf: 64px", "--seitenrand:", ".portal-footer {",
-                 ".mxh-seite {", ".mxh-tabelle {"):
+                 ".mxh-seite {", ".mxh-tabelle {", ".portal-kopf {",
+                 ".portal-kopf--statisch {", ".kopf-hilfe {", "@media (max-width: 760px)",
+                 "@media (max-width: 420px)"):
         assert teil in CSS, teil
 
 
@@ -39,3 +41,16 @@ def test_kein_fokus_abschalten_und_kein_transition_all():
 def test_nur_tokens_als_farben():
     # Farben kommen aus tokens.css; frame.css trägt keine eigenen Werte.
     assert not re.search(r"#[0-9a-fA-F]{3,8}\b|rgba?\(", OHNE_KOMMENTARE)
+
+
+def test_kopf_liegt_unter_den_app_overlays():
+    # Dialog-Hintergründe der Apps beginnen bei z-index 40 (Timetracker,
+    # Wochenplaner), die Admin-Seitenleiste liegt bei 90 — der Kopf darunter.
+    m = re.search(r"\.portal-kopf \{[^}]*z-index:\s*(\d+)", OHNE_KOMMENTARE)
+    assert m and int(m.group(1)) < 40, m and m.group(1)
+
+
+def test_kopf_hoehe_nur_ueber_var_kopf():
+    m = re.search(r"\.portal-kopf \{([^}]*)\}", OHNE_KOMMENTARE)
+    assert "min-height: var(--kopf)" in m.group(1)
+    assert not re.search(r"(?<![-\w])height\s*:\s*\d", m.group(1))

@@ -72,7 +72,8 @@ API:
 
 `js/frame.css` (seit 0.10.0, handgeschrieben, nicht generiert): Rahmen jeder Portal-Seite —
 `--kopf`, `--seitenrand`, `.portal-footer`, `.mxh-seite(--mittel|--schmal)`, `.mxh-tabelle`,
-Kommentar zur Sticky-Falle. Portal: `/static/core/frame.css` direkt nach `fokus.js`
+Kommentar zur Sticky-Falle; seit 0.11.0 die Kopfzeile `.portal-kopf` (+ `--statisch`, Mobil-Regeln
+760/420 px, z-index 30 unter allen App-Overlays) für das Portal-Makro `kopf()`. Portal: `/static/core/frame.css` direkt nach `fokus.js`
 (über `/static/`, das ohne Login erreichbar ist). Selektoren nur an Klassen. Wächter:
 `tests/test_frame.py` hier und im Portal. Plan: Schritt 3 (Phase 2).
 

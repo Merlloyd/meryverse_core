@@ -80,7 +80,8 @@ so a separate `base.css` would only add a route, a login exception and a link pe
 
 Since 0.10.0 `js/frame.css` carries the **page frame** (UI-Kit phase 2): `--kopf`,
 `--seitenrand`, the footer `.portal-footer` (partial `_footer.html` in the portal), containers
-`.mxh-seite`, the table base `.mxh-tabelle` and the documented sticky trap. Hand-written, not
+`.mxh-seite`, the table base `.mxh-tabelle`, the documented sticky trap and (since 0.11.0) the
+header `.portal-kopf` for the portal macro `kopf()` in `_header.html`. Hand-written, not
 generated; the portal loads it as `/static/core/frame.css` right after `fokus.js`. Selectors are
 always class-bound, never bare `footer`/`header`.
 

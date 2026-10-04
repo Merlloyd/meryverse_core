@@ -5,4 +5,4 @@ Usage:
     from meryverse_core import html_builder, assets
 """
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"
