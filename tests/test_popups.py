@@ -119,3 +119,14 @@ def test_menu_css():
             s = s.strip()
             if s and not s.startswith("@"):
                 assert s.startswith(".mxh-"), s
+
+
+def test_auswahl_faengt_nur_das_oeffnen_ab():
+    # F8: <select class="mxh-input"> öffnet die Meryverse-Liste; das Select
+    # bleibt das Feld (Klassen, Maße, Wert, change-Event unverändert).
+    js = _lies("menu.js")
+    assert "global.mxhAuswahl" in js
+    assert "'select.mxh-input, select.mxh-modal-input, select[data-mxh-auswahl]'" in js
+    for teil in ("addEventListener('mousedown'", "addEventListener('touchend'", "e.key === 'Enter'",
+                 "new Event('change', { bubbles: true })", "data-mxh-nativ"):
+        assert teil in js, teil

@@ -20,6 +20,7 @@
  *   {label, onSelect, checked, radio, disabled, title, keepOpen,
  *    icon      (fertiges <svg>-HTML, vertrauenswürdig),
  *    hint      (Nebentext rechts), color (Farbpunkt), children: [...]}  oder  {sep: true}
+ *   oder  {group: 'Überschrift'} (nicht wählbar, z. B. <optgroup>)
  *   checked gesetzt (true/false) → Häkchen-Eintrag (menuitemcheckbox), radio → menuitemradio.
  *   keepOpen: Auswahl lässt das Menü offen und baut es neu (Schalter).
  *
@@ -88,6 +89,7 @@
     }
     items.forEach(function (it) {
       if (it.sep) { var sp = document.createElement('div'); sp.className = 'mxh-menu-sep'; sp.setAttribute('role', 'separator'); box.appendChild(sp); return; }
+      if (it.group) { var g = document.createElement('div'); g.className = 'mxh-menu-group'; g.setAttribute('role', 'presentation'); g.textContent = it.group; box.appendChild(g); return; }
       var row = zeile(it, false);
       box.appendChild(row);
       row.addEventListener('mouseenter', function () {
@@ -235,7 +237,7 @@
         var lab = row.querySelector('.mxh-menu-label');
         row.hidden = !!q && norm(lab ? lab.textContent : row.textContent).indexOf(q) < 0;
       });
-      Array.prototype.forEach.call(box.querySelectorAll(':scope > .mxh-menu-sep'), function (sp) { sp.hidden = !!q; });
+      Array.prototype.forEach.call(box.querySelectorAll(':scope > .mxh-menu-sep, :scope > .mxh-menu-group'), function (sp) { sp.hidden = !!q; });
       st.akt = q ? 0 : -1; markieren();
     });
     var vor = eintraege(box).map(function (r) { return r.classList.contains('is-checked'); }).indexOf(true);
@@ -459,4 +461,84 @@
   };
 
   global.mxhMenu = api;
+
+  /* ── Auswahl: <select> mit Meryverse-Liste (F8, seit 0.18.0) ──────────────
+   * Jedes <select class="mxh-input"> (auch class="mxh-modal-input" und
+   * [data-mxh-auswahl]) öffnet statt der Browser-Liste dieses Menü als Liste
+   * (Suche ab 8 Einträgen). Das <select> selbst bleibt das sichtbare Feld mit
+   * allen Klassen, Maßen und JS-Bezügen — nur das Öffnen wird abgefangen
+   * (Maus, Finger, Tastatur). Wert, name, Formular, select.value und das
+   * change-Event bleiben unverändert. Neu gerenderte Selects erfasst ein
+   * MutationObserver. Ausnahmen: multiple, size > 1, data-mxh-nativ.
+   *   mxhAuswahl.aufwerten(select)   von Hand (z. B. ohne Klasse)
+   *   mxhAuswahl.oeffnen(select)
+   */
+  var SEL = 'select.mxh-input, select.mxh-modal-input, select[data-mxh-auswahl]';
+
+  function liste_oeffnen(sel) {
+    if (sel.disabled) return;
+    var items = [], gruppe = null;
+    Array.prototype.forEach.call(sel.options, function (o, i) {
+      var g = o.parentNode.tagName === 'OPTGROUP' ? o.parentNode : null;
+      if (g !== gruppe) { gruppe = g; if (g) items.push({ group: g.label }); }
+      if (o.hidden) return;
+      items.push({ label: o.label || o.textContent, checked: i === sel.selectedIndex, disabled: o.disabled || (g && g.disabled),
+        onSelect: function () {
+          if (sel.selectedIndex === i) return;
+          sel.selectedIndex = i;
+          sel.dispatchEvent(new Event('input', { bubbles: true }));
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        } });
+    });
+    var lab = sel.labels && sel.labels[0];
+    api.open(sel, items, { role: 'listbox', matchWidth: true, search: 8,
+      label: sel.getAttribute('aria-label') || (lab ? lab.textContent.trim() : '') });
+  }
+
+  function aufwerten(sel) {
+    if (!sel || sel._mxhAuswahl || sel.multiple || sel.size > 1 || sel.hasAttribute('data-mxh-nativ')) return;
+    sel._mxhAuswahl = true;
+    sel.setAttribute('aria-haspopup', 'listbox');
+    sel.setAttribute('aria-expanded', 'false');
+    // Maus: die Browser-Liste öffnet bei mousedown — abfangen, Fokus selbst setzen.
+    sel.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      if (document.activeElement !== sel) try { sel.focus({ preventScroll: true }); } catch (x) {}
+      liste_oeffnen(sel);
+    });
+    // Finger: der Klick nach touchend würde die System-Auswahl öffnen.
+    var start = null;
+    sel.addEventListener('touchstart', function (e) { var t = e.touches[0]; start = t ? { x: t.clientX, y: t.clientY } : null; }, { passive: true });
+    sel.addEventListener('touchend', function (e) {
+      var t = e.changedTouches[0];
+      if (!start || !t || Math.abs(t.clientX - start.x) + Math.abs(t.clientY - start.y) > 10) return;   // war Scrollen
+      e.preventDefault();
+      liste_oeffnen(sel);
+    });
+    // Tastatur: Enter, Leertaste, Alt+↓/↑, F4 öffnen; Pfeile ohne Alt bleiben
+    // nativ (Wert direkt umschalten), Buchstaben ebenso.
+    sel.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'F4' ||
+          (e.altKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp'))) {
+        e.preventDefault(); liste_oeffnen(sel);
+      }
+    });
+  }
+
+  function alleAufwerten(wurzel) {
+    if (wurzel.matches && wurzel.matches(SEL)) aufwerten(wurzel);
+    if (wurzel.querySelectorAll) Array.prototype.forEach.call(wurzel.querySelectorAll(SEL), aufwerten);
+  }
+  function start() {
+    alleAufwerten(document);
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) alleAufwerten(n); });
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+
+  global.mxhAuswahl = { aufwerten: aufwerten, oeffnen: liste_oeffnen };
 })(window);

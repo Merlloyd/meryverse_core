@@ -128,6 +128,13 @@ clamped to the viewport, closes on scroll/resize, bottom sheet with drill-down s
 touch screens. `mxhMenu.build(items, {after})` renders the flat form for detached windows. New
 layer token `--z-menu 3400`.
 
+Since 0.19.0 the same file upgrades **selects** (F8, no native drop-down list in the portal):
+every `select.mxh-input` / `select.mxh-modal-input` / `select[data-mxh-auswahl]` opens the
+Meryverse list (role listbox, search from 8 entries, `<optgroup>` as headings) instead of the
+browser list — mouse, touch, Enter/Space/Alt+↓/F4. The select itself stays the visible field
+(classes, sizes, value, `change` event untouched); new selects are picked up by a
+MutationObserver. Opt out with `data-mxh-nativ`. Item type `{group: 'Heading'}` added.
+
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
 fails if the file is stale.
