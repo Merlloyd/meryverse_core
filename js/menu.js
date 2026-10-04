@@ -49,6 +49,9 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function norm(v) { return String(v || '').normalize('NFC').toLowerCase(); }
+  function beruehrung() {
+    return !!window.matchMedia && window.matchMedia('(pointer: coarse), (hover: none)').matches;
+  }
   function istSheet() {
     return !!window.matchMedia &&
       window.matchMedia('(max-width: 600px) and (pointer: coarse), (max-width: 600px) and (hover: none)').matches;
@@ -361,8 +364,14 @@
   function weg(e) {
     if (!st) return;
     if (e && e.target && e.target.nodeType === 1 && drin(e.target)) return;   // Scrollen im Menü
-    // Handy: die Bildschirmtastatur (Suchfeld) ändert die Fenstergröße — kein Grund zu schließen.
-    if (e && e.type === 'resize' && (st.sheet || document.activeElement === st.sucheEl)) return;
+    // Handy/Tablet: Die Bildschirmtastatur (Suchfeld) ändert die Fenstergröße UND
+    // scrollt die Seite (iOS schiebt das fokussierte Feld ins Bild) — beides ist
+    // kein Grund zu schließen. Das Blatt liegt fest unten; Seiten-Scrollen
+    // verschiebt dort nichts. Bis 0.20.2 schloss das Scrollen nach dem
+    // Auto-Fokus der Suche das Menü sofort wieder (iPhone: „zuckt, öffnet nix“,
+    // Betreiber 2026-10-04, Chor-Sammlungswahl).
+    if (e && (e.type === 'resize' || e.type === 'scroll') &&
+        (st.sheet || document.activeElement === st.sucheEl)) return;
     api.close(false);
   }
 
@@ -380,7 +389,10 @@
         anker.setAttribute('aria-expanded', 'true');
       }
       var box = neuZeichnen();
-      if (st.sucheEl) { st.sucheEl.focus(); if (st.akt >= 0) markieren(); }
+      // Suche nur mit Maus/Tastatur sofort fokussieren. Auf Touch-Geräten würde
+      // der Fokus die Bildschirmtastatur hochfahren und die halbe Liste
+      // verdecken — wer suchen will, tippt ins Feld.
+      if (st.sucheEl && !beruehrung()) { st.sucheEl.focus(); if (st.akt >= 0) markieren(); }
       else erstes(box);
       setTimeout(function () {
         if (!st) return;
