@@ -19,7 +19,8 @@
  * items: Array oder Funktion, die ein frisches Array liefert. Eintrag:
  *   {label, onSelect, checked, radio, disabled, title, keepOpen,
  *    icon      (fertiges <svg>-HTML, vertrauenswürdig),
- *    hint      (Nebentext rechts), color (Farbpunkt), children: [...]}  oder  {sep: true}
+ *    hint      (Nebentext rechts), color (Farbpunkt), suche (zusätzliche Suchwörter),
+ *    children: [...]}  oder  {sep: true}
  *   oder  {group: 'Überschrift'} (nicht wählbar, z. B. <optgroup>)
  *   checked gesetzt (true/false) → Häkchen-Eintrag (menuitemcheckbox), radio → menuitemradio.
  *   keepOpen: Auswahl lässt das Menü offen und baut es neu (Schalter).
@@ -236,8 +237,10 @@
     inp.addEventListener('input', function () {
       var q = norm(inp.value).trim();
       Array.prototype.forEach.call(box.querySelectorAll(':scope > .mxh-menu-item'), function (row) {
-        var lab = row.querySelector('.mxh-menu-label');
-        row.hidden = !!q && norm(lab ? lab.textContent : row.textContent).indexOf(q) < 0;
+        // Gesucht wird in Name, Nebentext und optionalen Stichwörtern (it.suche).
+        var it = row._mxhItem || {};
+        var text = [it.label, it.hint, it.suche].filter(Boolean).join(' ');
+        row.hidden = !!q && norm(text).indexOf(q) < 0;
       });
       Array.prototype.forEach.call(box.querySelectorAll(':scope > .mxh-menu-sep, :scope > .mxh-menu-group'), function (sp) { sp.hidden = !!q; });
       // Leere Suche: Hinweis statt einer leeren Fläche.
