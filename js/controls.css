@@ -200,10 +200,11 @@ select.mxh-input {
  *     <button class="mxh-seg-btn" aria-pressed="true">…</button> …
  *   <details class="mxh-akkordeon"><summary>Titel</summary>…</details>   */
 .mxh-tabs {
-  display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
+  /* Umbrechen statt seitlich scrollen: ein weggescrollter Reiter ohne
+     sichtbaren Balken wäre am Handy nicht zu finden. */
+  display: flex; flex-wrap: wrap; gap: 0 2px;
   border-bottom: 1px solid var(--border);
 }
-.mxh-tabs::-webkit-scrollbar { display: none; }
 .mxh-tab {
   flex: none; box-sizing: border-box; min-height: var(--ctl-h); padding: 0 14px;
   display: inline-flex; align-items: center; gap: 6px;
