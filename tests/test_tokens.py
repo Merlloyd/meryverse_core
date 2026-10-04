@@ -59,3 +59,14 @@ def test_kern_assets_schalten_fokus_nicht_ab():
     for name in ("modal.css", "feedback.css"):
         text = (ROOT / "js" / name).read_text(encoding="utf-8")
         assert not re.search(r"outline\s*:\s*(none|0)\b", text), name
+
+
+def test_kalendersymbol_nicht_invertiert():
+    # color-scheme: dark lässt Chrome das Kalendersymbol schon hell zeichnen.
+    # Ein zusätzliches filter: invert() dreht es zurück ins Dunkle — auf dem
+    # dunklen Portal-Grund ist es dann kaum sichtbar (gemessen: hellster Pixel
+    # 255 ohne, 136 mit invert(0.85)).
+    css = design.PORTAL_BASIS_CSS
+    regel = css[css.index("::-webkit-calendar-picker-indicator"):]
+    regel = regel[:regel.index("}")]
+    assert "invert" not in regel

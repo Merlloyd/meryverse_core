@@ -44,8 +44,10 @@
  * `outline: none` abschalten (Wächter tests/test_ui_basis.py im Website-Repo). */
 :focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
 
-/* Kalender-Symbol nativer Datums-/Zeitfelder auf dunklem Grund sichtbar. */
-::-webkit-calendar-picker-indicator { filter: invert(0.85); cursor: pointer; }
+/* Kalender-Symbol nativer Datums-/Zeitfelder: Hell zeichnet Chrome es schon
+ * wegen color-scheme: dark — KEIN filter: invert(), der dreht es zurück ins
+ * Dunkle und macht es auf dunklem Grund unsichtbar (nachgemessen 2026-10-04). */
+::-webkit-calendar-picker-indicator { cursor: pointer; }
 
 /* Dünne, getönte Scrollbalken. Ausblenden nur gezielt mit .no-scrollbar —
  * wirkt auf das Element und alles darin (z. B. <body class="no-scrollbar">). */
