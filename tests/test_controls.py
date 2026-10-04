@@ -21,7 +21,7 @@ def test_bausteine_vorhanden():
     for teil in (".mxh-btn {", ".mxh-btn--primary {", ".mxh-btn--ghost {", ".mxh-btn--danger {",
                  ".mxh-btn--sm {", ".mxh-btn--icon {", ".mxh-chip {", ".mxh-linkbtn {",
                  ".mxh-input {", "select.mxh-input {", ".mxh-label {", ".mxh-hint {",
-                 ".mxh-switch {", ".mxh-file {", ".mxh-chip--gross {", "--ctl-h: 44px", "--ctl-h-sm: 36px"):
+                 ".mxh-switch {", ".mxh-file {", ".mxh-chip--gross {", "--ctl-h: 36px"):
         assert teil in CSS, teil
 
 
@@ -52,6 +52,19 @@ def test_touchziele_nie_unter_36px():
     for wert in re.findall(r"min-height:\s*(\d+)px", OHNE_KOMMENTARE):
         assert int(wert) >= 32, wert          # Chips 32, sonst ≥ 36
     assert "min-height: var(--ctl-h)" in OHNE_KOMMENTARE
+
+
+def test_eine_groesse_fuer_alle():
+    # Betreiber 2026-10-04 (0.14.0): Knöpfe und Felder einheitlich 36 px —
+    # die --sm-Varianten dürfen Höhe, Innenabstand und Schrift nicht mehr ändern.
+    assert "--ctl-h: 36px" in OHNE_KOMMENTARE
+    assert "--ctl-h-sm: var(--ctl-h)" in OHNE_KOMMENTARE
+    for klasse in (".mxh-btn--sm", ".mxh-input--sm"):
+        m = re.search(re.escape(klasse) + r" \{([^}]*)\}", OHNE_KOMMENTARE)
+        assert m, klasse
+        assert not re.search(r"min-height|padding|font-size", m.group(1)), klasse
+    modal = (ROOT / "js" / "modal.css").read_text(encoding="utf-8")
+    assert "min-height: 40px" not in modal and "min-height: 44px" not in modal
 
 
 def test_ios_zoom_schutz():
