@@ -21,7 +21,7 @@ def test_bausteine_vorhanden():
     for teil in (".mxh-btn {", ".mxh-btn--primary {", ".mxh-btn--ghost {", ".mxh-btn--danger {",
                  ".mxh-btn--sm {", ".mxh-btn--icon {", ".mxh-chip {", ".mxh-linkbtn {",
                  ".mxh-input {", "select.mxh-input {", ".mxh-label {", ".mxh-hint {",
-                 ".mxh-switch {", ".mxh-file {", "--ctl-h: 44px", "--ctl-h-sm: 36px"):
+                 ".mxh-switch {", ".mxh-file {", ".mxh-chip--gross {", "--ctl-h: 44px", "--ctl-h-sm: 36px"):
         assert teil in CSS, teil
 
 
