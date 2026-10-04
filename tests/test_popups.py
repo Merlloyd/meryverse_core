@@ -80,3 +80,14 @@ def test_tooltip():
     assert "global.mxhTip" in js and "'[data-tip-t], [data-tip]'" in js
     assert "esc(titel)" in js and "esc(text)" in js        # kein HTML aus Attributen
     assert "var(--z-tooltip" in _lies("tooltip.css")
+
+
+def test_fokusfalle_fuer_app_dialoge():
+    # Seit 0.17.0: fokus.js (lädt auf jeder Seite) fängt Tab in jedem sichtbaren
+    # .mxh-overlay, ohne dass die Apps etwas aufrufen; mxhModal hat Vorrang.
+    js = _lies("fokus.js")
+    assert "querySelectorAll('.mxh-overlay')" in js
+    assert "MutationObserver" in js and "attributeFilter: ['hidden', 'class', 'style']" in js
+    assert "getElementById('mxh-modal-root')" in js           # Vorrang mxhModal
+    assert "ausloeser" in js                                  # Fokus zurück
+    assert ".focus()" not in js.split("function fokusRein")[1].split("}")[0].replace("d.focus(", "")  # nie ins erste Feld

@@ -111,6 +111,12 @@ button `.mxh-x` — and the status patterns `.mxh-empty(--karte)`, `.mxh-loading
 mouseover as a core component: `data-tip-t` (bold title) + `data-tip` (text), delegated, also on
 keyboard focus and touch long-press.
 
+Since 0.17.0 `js/fokus.js` also traps focus in **app-owned dialogs**: every visible `.mxh-overlay`
+(found by a MutationObserver, however the app opens it) keeps Tab inside its `.mxh-dialog`, moves
+focus to the dialog itself on open (not into the first field — no surprise keyboard on phones) and
+returns focus to the trigger on close. Stacked dialogs: the higher layer wins; an open `mxhModal`
+takes precedence. Esc stays with the app.
+
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
 fails if the file is stale.
