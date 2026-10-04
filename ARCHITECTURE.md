@@ -40,6 +40,7 @@ meryverse_core/                  Paket-Wurzel (pip-name: meryverse-core)
 │   ├── tokens.css               GENERIERT aus design.py (Portal: /core/tokens.css)
 │   ├── fokus.js                 html.mxh-maus — Ring in Textfeldern nur per Tastatur
 │   ├── frame.css                Seitenrahmen (seit 0.10.0): Fußzeile, Container, Tabelle
+│   ├── controls.css             Knöpfe und Felder (seit 0.12.0): .mxh-btn, .mxh-input, .mxh-chip …
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js                AES-256-GCM + PBKDF2 + Dual-Envelope v2

@@ -124,8 +124,11 @@
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────────── */
+/* Werte wie .mxh-btn in controls.css (UI-Kit Phase 3, F1). */
 .mxh-fb-btn {
-  padding: 7px 14px;
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 0 14px;
   border-radius: var(--radius, 10px);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
   background: transparent;
@@ -133,16 +136,17 @@
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
   font-size: 13px;
   cursor: pointer;
+  transition: background-color 0.15s, filter 0.15s;
 }
 .mxh-fb-btn:hover { background: var(--surface2, #1a5d74); }
+.mxh-fb-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .mxh-fb-btn.primary {
-  background: var(--accent, #1A936F);
-  border-color: var(--accent, #1A936F);
-  color: #fff;
+  background: var(--accent2, #88D498);
+  border-color: var(--accent2, #88D498);
+  color: var(--bg, #0c3242);
   font-weight: 600;
 }
-.mxh-fb-btn.primary:hover { background: var(--accent2, #88D498); color: #0c3242; }
-.mxh-fb-btn.primary:disabled { opacity: 0.55; cursor: default; }
+.mxh-fb-btn.primary:hover { background: var(--accent2, #88D498); filter: brightness(1.08); }
 .mxh-fb-btn.danger { border-color: var(--neg, #f87171); color: var(--neg, #f87171); }
 .mxh-fb-btn.danger:hover { background: rgba(248, 113, 113, 0.15); }
 

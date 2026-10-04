@@ -42,6 +42,7 @@ meryverse_core/
 │   ├── tokens.css              # generated from design.py (portal: /core/tokens.css)
 │   ├── fokus.js                # html.mxh-maus: ring in text fields only via keyboard
 │   ├── frame.css               # page frame: footer, containers, table (portal: /static/core/)
+│   ├── controls.css            # buttons and fields .mxh-btn/.mxh-input … (portal: /static/core/)
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -84,6 +85,12 @@ Since 0.10.0 `js/frame.css` carries the **page frame** (UI-Kit phase 2): `--kopf
 header `.portal-kopf` for the portal macro `kopf()` in `_header.html`. Hand-written, not
 generated; the portal loads it as `/static/core/frame.css` right after `fokus.js`. Selectors are
 always class-bound, never bare `footer`/`header`.
+
+Since 0.12.0 `js/controls.css` carries **buttons and fields** (UI-Kit phase 3): `.mxh-btn`
+(+ `--primary` light green with dark text, `--ghost`, `--danger`, `--sm`, `--icon`, `--block`),
+`.mxh-chip`, `.mxh-linkbtn`, `.mxh-input`, labels/hints/errors, switch, file. Only `.mxh-` selectors,
+only token colors; `modal.css`/`feedback.css` use the same values. Portal: `/static/core/controls.css`
+right after `frame.css`.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`

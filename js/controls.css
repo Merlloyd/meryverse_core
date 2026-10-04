@@ -1,0 +1,176 @@
+/* meryverse_core — Knöpfe und Felder jeder Portal-Seite (UI-Kit Phase 3)
+ *
+ * Ein Satz Bedienelemente statt ~15 Primärknöpfen, fünf Rotstufen und je
+ * Seite anderen Feldern (Review 01). Wird im Portal als
+ * /static/core/controls.css direkt nach frame.css geladen — über /static/,
+ * also auch auf abgemeldeten Seiten (Login, Reset) ohne eigene Route. Danach
+ * kommen die App-Styles; sie behalten das letzte Wort.
+ *
+ * Regeln:
+ *  - Nur Klassen mit Präfix .mxh-, keine Element-Selektoren — Apps, die noch
+ *    nicht umgestellt sind, bleiben unberührt.
+ *  - Farben nur aus tokens.css (Mischungen per color-mix), keine Hex-Werte.
+ *  - Den Fokusring liefert tokens.css (:focus-visible); hier wird er nie
+ *    abgeschaltet. Übergänge nur auf konkrete Eigenschaften.
+ *  - F1 (Betreiber 2026-10-03): Primärknöpfe hellgrün (--accent2) mit dunkler
+ *    Schrift (--bg) — weißer Text auf --accent hatte nur ~3,9:1.
+ *
+ * Plan: plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md (Workspace),
+ * Schritt 4; Vorlage Review 01, Abschnitt 4.
+ */
+
+:root {
+  --ctl-h: 44px;                 /* Standardhöhe (Touch) */
+  --ctl-h-sm: 36px;              /* kompakt (Tabellen, Werkzeugleisten) — nie kleiner */
+  --radius-pill: 999px;
+  --on-accent: var(--bg);        /* Schrift auf --accent2-Flächen */
+  --neg-bg: color-mix(in srgb, var(--neg) 12%, transparent);
+  --disabled-opacity: 0.45;
+}
+
+/* `hidden` muss gewinnen: die display-Werte unten würden es sonst aufheben
+   (gefunden an #btn-back im Sammlungs-Admin, per JS über hidden geschaltet). */
+.mxh-btn[hidden], .mxh-chip[hidden], .mxh-input[hidden], .mxh-switch[hidden],
+.mxh-check[hidden], .mxh-field[hidden], .mxh-linkbtn[hidden] { display: none; }
+
+/* ── Knöpfe ────────────────────────────────────────────────────────────── */
+.mxh-btn {
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: var(--ctl-h); padding: 0 18px;
+  font-family: var(--font); font-size: 0.9rem; font-weight: 500; line-height: 1.2;
+  color: var(--text); text-decoration: none; white-space: nowrap;
+  background: var(--surface2);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, filter 0.15s, transform 0.1s;
+}
+.mxh-btn:hover { background: var(--surface3); }
+.mxh-btn:active { transform: scale(0.98); }
+.mxh-btn:disabled, .mxh-btn[aria-disabled="true"] {
+  opacity: var(--disabled-opacity); cursor: not-allowed; transform: none;
+}
+.mxh-btn[aria-busy="true"] { cursor: progress; }
+
+.mxh-btn--primary {
+  background: var(--accent2); border-color: var(--accent2);
+  color: var(--on-accent); font-weight: 600;
+}
+.mxh-btn--primary:hover { background: var(--accent2); filter: brightness(1.08); }
+
+.mxh-btn--ghost { background: transparent; border-color: var(--border); color: var(--text2); }
+.mxh-btn--ghost:hover { background: color-mix(in srgb, var(--text) 5%, transparent); border-color: var(--border2); color: var(--text); }
+
+.mxh-btn--danger { background: transparent; border-color: color-mix(in srgb, var(--neg) 55%, transparent); color: var(--neg); }
+.mxh-btn--danger:hover { background: var(--neg-bg); border-color: var(--neg); }
+/* Gefüllt nur im Bestätigungsschritt („Wirklich löschen?") */
+.mxh-btn--danger-fill { background: var(--neg); border-color: var(--neg); color: var(--on-accent); font-weight: 600; }
+.mxh-btn--danger-fill:hover { background: var(--neg); filter: brightness(1.08); }
+
+.mxh-btn--sm { min-height: var(--ctl-h-sm); padding: 0 12px; font-size: 0.85rem; }
+.mxh-btn--icon { width: var(--ctl-h); padding: 0; }
+.mxh-btn--icon.mxh-btn--sm { width: var(--ctl-h-sm); }
+.mxh-btn--block { display: flex; width: 100%; }
+
+/* Text-Link als Knopf (ein Muster statt acht Klassen) */
+.mxh-linkbtn {
+  display: inline; padding: 0; margin: 0; background: none; border: none; cursor: pointer;
+  font: inherit; color: var(--accent2); text-decoration: none;
+  border-bottom: 1px dotted var(--border2);
+  transition: color 0.15s, border-color 0.15s;
+}
+.mxh-linkbtn:hover { color: var(--text); border-bottom-color: var(--accent2); }
+.mxh-linkbtn--leise { color: var(--text3); }
+.mxh-linkbtn:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+/* Pille / Filter: Zustand über aria-pressed (oder .is-active für Links) */
+.mxh-chip {
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 32px; padding: 0 12px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  color: var(--text2); text-decoration: none; white-space: nowrap;
+  background: transparent; border: 1px solid var(--border); border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.mxh-chip:hover { color: var(--text); border-color: var(--border2); }
+.mxh-chip[aria-pressed="true"], .mxh-chip.is-active {
+  color: var(--text); border-color: var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 14%, transparent);
+}
+.mxh-chip:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+/* ── Felder ────────────────────────────────────────────────────────────── */
+.mxh-input {
+  box-sizing: border-box;
+  width: 100%; min-height: var(--ctl-h); padding: 10px 14px;
+  font-family: var(--font); font-size: 0.95rem; line-height: 1.4;
+  color: var(--text); background: var(--bg);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.mxh-input::placeholder { color: var(--text3); opacity: 1; }
+.mxh-input:hover { border-color: color-mix(in srgb, var(--accent2) 45%, transparent); }
+.mxh-input:focus { border-color: var(--accent2); }
+.mxh-input:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+/* Schreibgeschützt ≠ gesperrt: Inhalt bleibt voll lesbar und kopierbar (Token). */
+.mxh-input[readonly] { background: var(--surface); }
+.mxh-input--sm { min-height: var(--ctl-h-sm); padding: 6px 10px; font-size: 0.875rem; }
+textarea.mxh-input { min-height: 88px; resize: vertical; }
+select.mxh-input {
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  padding-right: 36px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text2) 50%),
+    linear-gradient(135deg, var(--text2) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 52%, calc(100% - 13px) 52%;
+  background-size: 6px 6px; background-repeat: no-repeat;
+}
+/* iOS zoomt bei Feldschrift unter 16 px ins Feld — auf Touch-Geräten 16 px. */
+@media (pointer: coarse) {
+  .mxh-input, .mxh-input--sm { font-size: 16px; }
+}
+
+/* Feld-Gerüst: Label, Pflicht-Stern, Hinweis, Fehler */
+.mxh-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.mxh-label {
+  display: block;
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3);
+}
+.mxh-req { color: var(--accent2); margin-left: 2px; }
+.mxh-hint { font-size: 0.8rem; line-height: 1.45; color: var(--text3); }
+.mxh-input[aria-invalid="true"], .mxh-field--error .mxh-input { border-color: var(--neg); }
+.mxh-error, .mxh-field--error .mxh-hint { font-size: 0.8rem; line-height: 1.45; color: var(--neg); }
+
+/* Schalter: echtes Checkbox-Input (Formularsemantik + Tastatur gratis)
+   <label class="mxh-switch"><input type="checkbox"><span>Text</span></label> */
+.mxh-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; min-height: 40px; }
+.mxh-switch input {
+  appearance: none; -webkit-appearance: none; margin: 0; flex: none; cursor: pointer;
+  position: relative; width: 38px; height: 22px; border-radius: var(--radius-pill);
+  background: var(--surface3); border: 1px solid var(--border2);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.mxh-switch input::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--text2);
+  transition: transform 0.15s, background-color 0.15s;
+}
+.mxh-switch input:checked { background: var(--accent2); border-color: var(--accent2); }
+.mxh-switch input:checked::after { transform: translateX(16px); background: var(--on-accent); }
+.mxh-switch input:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+/* Checkbox/Radio mit Beschriftung: Klickfläche ≥ 40 px */
+.mxh-check { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; cursor: pointer; }
+.mxh-check input { width: 18px; height: 18px; margin: 0; flex: none; cursor: pointer; }
+
+/* Datei: verstecktes Input + Label im Knopf-Look
+   <label class="mxh-btn mxh-file"><input type="file">Datei wählen</label> */
+.mxh-file { position: relative; overflow: hidden; }
+.mxh-file input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.mxh-file:focus-within { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+/* Breite Tabellen am Handy: seitlich scrollen statt die Seite zu sprengen */
+.mxh-scroll-x { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
