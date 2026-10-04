@@ -1,0 +1,83 @@
+/* meryverse_core — Rahmen jeder Portal-Seite (UI-Kit Phase 2)
+ *
+ * Kopf, Fuß und Seitenrahmen an EINER Stelle statt als Kopie je Template.
+ * Wird im Portal als /static/core/frame.css direkt nach tokens.css und
+ * fokus.js geladen — über /static/, weil `static` in der allowed-Menge von
+ * require_login steht (abgemeldete Seiten brauchen den Rahmen auch) und keine
+ * eigene Route nötig ist. Danach kommen die App-Styles; sie behalten das
+ * letzte Wort. Alle Selektoren sind an Klassen gebunden, nie an nackte
+ * Elemente wie `footer` — native HTML-Bausteine (Info Material) und Dialoge
+ * enthalten eigene <footer>, die nicht getroffen werden dürfen.
+ *
+ * Plan: plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md (Workspace).
+ */
+
+:root {
+  --kopf: 64px;                               /* Höhe der Kopfzeile */
+  --seitenrand: clamp(16px, 5vw, 48px);       /* waagerechter Seitenrand */
+}
+
+/* ── Fußzeile (Partial templates/_footer.html) ─────────────────────────────
+ * Standard laut CLAUDE.md §5: Trennlinie oben, links Logo + Autor, rechts
+ * Copyright + Version, bis 600 px gestapelt und zentriert. Klebt unten, wenn
+ * die Seite body {display:flex; flex-direction:column} + main {flex:1} hat. */
+.portal-footer {
+  flex: none;
+  border-top: 1px solid var(--border);
+  padding: 20px var(--seitenrand);
+}
+.portal-footer .footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.portal-footer .footer-brand { display: flex; align-items: center; gap: 8px; opacity: 0.6; }
+.portal-footer .footer-logo { border-radius: 4px; display: block; }
+.portal-footer .footer-text {
+  font-family: var(--mono); font-size: 11px; color: var(--text3); text-decoration: none;
+}
+.portal-footer a.footer-text { transition: color 0.15s; }
+.portal-footer a.footer-text:hover { color: var(--text2); }
+@media (max-width: 600px) {
+  .portal-footer .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+}
+
+/* ── Seiten mit Karte in der Mitte (Anmeldung, Passwort-Reset, Telegram …) ──
+ * Der body ist dort eine zentrierte Flex-Spalte. rahmen-fuss: Fußzeile über
+ * die volle Breite an den unteren Rand. rahmen-karte-mittig: die eine Karte
+ * steht senkrecht mittig zwischen oberem Rand und Fußzeile. */
+body.rahmen-fuss > .portal-footer { align-self: stretch; margin-top: auto; }
+body.rahmen-karte-mittig > .card { margin-block: auto; }
+
+/* ── Inhalts-Container ────────────────────────────────────────────────────
+ * Zentrierte Spalte mit Seitenrand. Standard 1200 px (Chor, Admin-Listen),
+ * --mittel 960 px (Profil), --schmal 760 px (Timetracker, Formulare). */
+.mxh-seite {
+  width: 100%; max-width: 1200px; margin-inline: auto;
+  padding-inline: var(--seitenrand);
+}
+.mxh-seite--mittel { max-width: 960px; }
+.mxh-seite--schmal { max-width: 760px; }
+
+/* ── Tabellen-Standard ────────────────────────────────────────────────────
+ * Grundform aus den Admin-Listen (Feedback, Kontakt, Telegram-Log): volle
+ * Breite, Trennlinien, Spaltenköpfe in Mono-Versalien. Zeilen-Hover und
+ * Klick-Optik bleiben Sache der Seite (nicht jede Zeile ist klickbar). */
+.mxh-tabelle { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.mxh-tabelle th, .mxh-tabelle td {
+  padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border);
+}
+.mxh-tabelle th {
+  font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+/* ── Sticky-Falle (Vorfälle V3.144.5 Spiele, V3.145.1 Lernkarten/TT) ────
+ * position: sticky klebt nur, solange das Dokument selbst scrollt. Zwei
+ * Muster machen den <body> zum Scroll-Container und lassen Kopfzeilen nach
+ * einer Bildschirmhöhe wegrutschen:
+ *   1. body { height: 100% }  (der Inhalt läuft über den body hinaus)
+ *   2. overflow(-x) ≠ visible auf html UND body gleichzeitig
+ * Deshalb: Höhe und overflow-x nur auf html, nie zusätzlich auf body.
+ * Bewusst KEINE globale Regel hier — html { overflow-x: hidden } würde auf
+ * Seiten, die body { overflow-x: hidden } setzen, genau Muster 2 erzeugen.
+ * Wächter: tests/test_frame.py im Portal (dokumentierte Ausnahmen dort). */

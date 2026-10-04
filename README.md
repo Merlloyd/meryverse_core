@@ -40,6 +40,8 @@ meryverse_core/
 │   └── html_builder.py         # Builder for self-contained HTML files
 ├── js/                         # Frontend modules (loaded via assets.py)
 │   ├── tokens.css              # generated from design.py (portal: /core/tokens.css)
+│   ├── fokus.js                # html.mxh-maus: ring in text fields only via keyboard
+│   ├── frame.css               # page frame: footer, containers, table (portal: /static/core/)
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -75,6 +77,12 @@ Since 0.9.0 the file also carries the **portal base rules** (`PORTAL_BASIS_CSS`:
 `color-scheme: dark`, global `:focus-visible` ring, `accent-color`, thin scrollbars with a
 `.no-scrollbar` opt-out, `prefers-reduced-motion`) — every portal page already loads it first,
 so a separate `base.css` would only add a route, a login exception and a link per template.
+
+Since 0.10.0 `js/frame.css` carries the **page frame** (UI-Kit phase 2): `--kopf`,
+`--seitenrand`, the footer `.portal-footer` (partial `_footer.html` in the portal), containers
+`.mxh-seite`, the table base `.mxh-tabelle` and the documented sticky trap. Hand-written, not
+generated; the portal loads it as `/static/core/frame.css` right after `fokus.js`. Selectors are
+always class-bound, never bare `footer`/`header`.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`

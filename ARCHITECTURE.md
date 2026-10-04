@@ -38,6 +38,8 @@ meryverse_core/                  Paket-Wurzel (pip-name: meryverse-core)
 │   └── crypto.py                Stub (server-seitige AES-Helfer)
 ├── js/                          Frontend-Module (vom Loader gelesen)
 │   ├── tokens.css               GENERIERT aus design.py (Portal: /core/tokens.css)
+│   ├── fokus.js                 html.mxh-maus — Ring in Textfeldern nur per Tastatur
+│   ├── frame.css                Seitenrahmen (seit 0.10.0): Fußzeile, Container, Tabelle
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js                AES-256-GCM + PBKDF2 + Dual-Envelope v2
@@ -67,6 +69,12 @@ API:
   Kopfkommentar + `get_css_block`). Das Portal lädt die Datei als `/core/tokens.css`
   vor allen anderen Stylesheets — Plan `plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md`
   (Workspace), Phase 0.
+
+`js/frame.css` (seit 0.10.0, handgeschrieben, nicht generiert): Rahmen jeder Portal-Seite —
+`--kopf`, `--seitenrand`, `.portal-footer`, `.mxh-seite(--mittel|--schmal)`, `.mxh-tabelle`,
+Kommentar zur Sticky-Falle. Portal: `/static/core/frame.css` direkt nach `fokus.js`
+(über `/static/`, das ohne Login erreichbar ist). Selektoren nur an Klassen. Wächter:
+`tests/test_frame.py` hier und im Portal. Plan: Schritt 3 (Phase 2).
 
 ### 2.2 `assets.py`
 
