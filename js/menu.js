@@ -97,8 +97,12 @@
       if (it.group) { var g = document.createElement('div'); g.className = 'mxh-menu-group'; g.setAttribute('role', 'presentation'); g.textContent = it.group; box.appendChild(g); return; }
       var row = zeile(it, false);
       box.appendChild(row);
-      row.addEventListener('mouseenter', function () {
-        if (row !== document.activeElement && st && !st.sucheEl) try { row.focus({ preventScroll: true }); } catch (e) {}
+      // Nur echte Maus: Reagiert ein Eintrag beim Tippen auf „mouseenter“ (Fokus,
+      // Untermenü), wertet iOS das erste Tippen als Hover und löst den Klick erst
+      // beim zweiten aus (Betreiber 2026-10-04: „Eintrag zweimal auswählen“).
+      row.addEventListener(window.PointerEvent ? 'pointerenter' : 'mouseenter', function (e) {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        if (row !== document.activeElement && st && !st.sucheEl) try { row.focus({ preventScroll: true }); } catch (e2) {}
         if (it.children) unterOeffnen(box, row, ebene, false); else unterZu(box);
       });
       row.addEventListener('click', function (e) {
@@ -273,12 +277,24 @@
     } else if (st.sucheEl) st.sucheEl.removeAttribute('aria-activedescendant');
   }
 
+  // Blatt über der Bildschirmtastatur: iOS legt die Tastatur ÜBER das Layout-
+  // Fenster (fixed bottom:0 liegt dann darunter). visualViewport sagt, wie viel
+  // sichtbar ist — das Blatt rückt nach oben und wird höchstens so hoch.
+  function blattLage() {
+    if (!st || !st.sheet || !st.el || !window.visualViewport) return;
+    var vv = window.visualViewport;
+    var unten = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+    st.el.style.bottom = unten + 'px';
+    st.el.style.maxHeight = Math.round(Math.min(window.innerHeight * 0.7, vv.height - 12)) + 'px';
+  }
+
   function lage() {
     var m = st.el, a = st.anker;
     if (st.sheet) {
       st.backdrop = document.createElement('div');
       st.backdrop.className = 'mxh-menu-backdrop';
       st.host.insertBefore(st.backdrop, m);
+      blattLage();
       m.style.visibility = '';
       return;
     }
@@ -400,6 +416,10 @@
         document.addEventListener('keydown', escGlobal, true);
         window.addEventListener('resize', weg);
         document.addEventListener('scroll', weg, true);
+        if (st.sheet && window.visualViewport) {
+          window.visualViewport.addEventListener('resize', blattLage);
+          window.visualViewport.addEventListener('scroll', blattLage);
+        }
       }, 0);
       return box;
     },
@@ -415,6 +435,10 @@
       document.removeEventListener('keydown', escGlobal, true);
       window.removeEventListener('resize', weg);
       document.removeEventListener('scroll', weg, true);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', blattLage);
+        window.visualViewport.removeEventListener('scroll', blattLage);
+      }
       if (s.anker && s.anker.setAttribute) s.anker.setAttribute('aria-expanded', 'false');
       if (fokusZurueck !== false && s.anker && s.anker.focus && s.anker.isConnected) {
         try { s.anker.focus({ preventScroll: true }); } catch (e) {}
