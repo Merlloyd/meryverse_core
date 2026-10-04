@@ -28,7 +28,8 @@
  *       placement 'below' (Standard) | 'above' (z. B. Dock unten),
  *       search (true | ab N Einträgen: Zahl), searchPlaceholder,
  *       title + onDetach (Kopfzeile mit „Ablösen"-Knopf), matchWidth (Breite ≥ Anker),
- *       role 'menu' (Standard) | 'listbox' (Auswahl), onClose.
+ *       role 'menu' (Standard) | 'listbox' (Auswahl), onClose,
+ *       className (Zusatzklasse(n) am Menü, z. B. 'no-scrollbar').
  *
  * Tastatur: ↑/↓ Home/End, Enter/Leertaste wählen, → öffnet ein Untermenü,
  * ←/Esc schließt es, Esc schließt das Menü, Tab schließt und geht weiter,
@@ -186,6 +187,7 @@
     var alt = st.el, items = inhalt();
     var box = liste(items, 0);
     box.classList.toggle('mxh-menu--sheet', st.sheet);
+    if (st.opts.className) String(st.opts.className).split(/\s+/).forEach(function (k) { if (k) box.classList.add(k); });
     if (st.opts.title || st.stapel.length) {
       var head = document.createElement('div'); head.className = 'mxh-menu-head';
       if (st.stapel.length) {
@@ -238,6 +240,13 @@
         row.hidden = !!q && norm(lab ? lab.textContent : row.textContent).indexOf(q) < 0;
       });
       Array.prototype.forEach.call(box.querySelectorAll(':scope > .mxh-menu-sep, :scope > .mxh-menu-group'), function (sp) { sp.hidden = !!q; });
+      // Leere Suche: Hinweis statt einer leeren Fläche.
+      var leer = box.querySelector(':scope > .mxh-menu-leer--suche');
+      var treffer = eintraege(box).length;
+      if (!treffer && !leer) {
+        leer = document.createElement('div'); leer.className = 'mxh-menu-leer mxh-menu-leer--suche';
+        leer.textContent = 'Keine Treffer'; box.appendChild(leer);
+      } else if (treffer && leer) leer.remove();
       st.akt = q ? 0 : -1; markieren();
     });
     var vor = eintraege(box).map(function (r) { return r.classList.contains('is-checked'); }).indexOf(true);
