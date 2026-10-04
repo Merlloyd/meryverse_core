@@ -184,6 +184,21 @@ html.mxh-maus :is(input:not([type=checkbox], [type=radio], [type=range], [type=b
 .no-scrollbar, .no-scrollbar * { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar, .no-scrollbar *::-webkit-scrollbar { display: none; }
 
+/* Ebenen und Abdunklung (UI-Kit Phase 4, seit 0.15.0) — eine Skala für alle
+ * Apps statt 40…9700 querbeet. Reihenfolge von unten nach oben:
+ *   --z-fab      schwebende Knöpfe (Feedback)  — liegt UNTER jedem Dialog
+ *   --z-overlay  app-eigene Dialoge/Blätter
+ *   --z-modal    mxhModal (Rückfrage über einem App-Dialog muss oben liegen)
+ *   --z-toast    Rückmeldungen (auch über einem offenen Dialog lesbar)
+ *   --z-tooltip  Hinweise am Mauszeiger
+ * Werte so gewählt, dass die heutigen Chor-Overlays (bis 2001) unter
+ * --z-modal bleiben. */
+:root {
+  --z-fab: 900; --z-overlay: 1000; --z-modal: 3000; --z-toast: 3500; --z-tooltip: 4000;
+  --overlay: rgba(6,24,33,0.72);
+  --shadow-pop: 0 18px 50px rgba(0,0,0,0.45);
+}
+
 /* Wer Bewegung reduziert haben möchte, bekommt keine Animationen. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -5,22 +5,37 @@
  * mit dunklen Meryverse-Fallbacks, falls die Tokens fehlen.
  * ════════════════════════════════════════════════════════════════ */
 .mxh-modal-overlay {
-  position: fixed; inset: 0; z-index: 3000;
+  position: fixed; inset: 0; z-index: var(--z-modal, 3000);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px; background: rgba(6, 24, 33, 0.72);
+  padding: 16px; background: var(--overlay, rgba(6, 24, 33, 0.72));
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
 }
 .mxh-modal-overlay[hidden] { display: none; }
 
 .mxh-modal-card {
+  position: relative;
   width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
   background: var(--surface, #114B5F);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
   border-radius: 14px; padding: 20px 22px;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-pop, 0 18px 50px rgba(0, 0, 0, 0.45));
   color: var(--text, #F3E9D2);
   font-family: var(--font, 'IBM Plex Sans', 'Segoe UI', sans-serif);
 }
 .mxh-modal-card.mxh-modal-wide { max-width: 760px; }
+
+/* Schließen-Knopf oben rechts (UI-Kit Phase 4) — eine Form für alle Dialoge,
+   auch app-eigene: <button class="mxh-modal-x" aria-label="Schließen">×</button>. */
+.mxh-modal-x {
+  position: absolute; top: 8px; right: 8px;
+  box-sizing: border-box; width: var(--ctl-h, 36px); height: var(--ctl-h, 36px);
+  display: inline-flex; align-items: center; justify-content: center; padding: 0;
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius, 10px);
+  color: var(--text2, #C6DABF); font: 400 1.35rem/1 var(--font, sans-serif); cursor: pointer;
+}
+.mxh-modal-x:hover { background: var(--surface2, #1a5d74); border-color: var(--border2, rgba(136, 212, 152, 0.28)); color: var(--text, #F3E9D2); }
+.mxh-modal-card:has(> .mxh-modal-x) > .mxh-modal-title,
+.mxh-modal-card:has(> .mxh-modal-x) > :is(h1, h2, h3):first-of-type { padding-right: 40px; }
 
 .mxh-modal-title { margin: 0 0 12px; font-size: 1.05rem; color: var(--text, #F3E9D2); }
 .mxh-modal-msg { font-size: 0.9rem; color: var(--text2, #C6DABF); white-space: pre-wrap; line-height: 1.45; }

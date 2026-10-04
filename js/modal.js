@@ -10,14 +10,32 @@
  *   mxhModal.alert(msg, {title, okText})            -> Promise<void>
  *   mxhModal.confirm(msg, {title, okText, cancelText, danger}) -> Promise<bool>
  *   mxhModal.prompt(label, {title, default, placeholder, type, validate, okText, cancelText}) -> Promise<string|null>
- *   mxhModal.open(html, {wide})                      -> Promise<any>  (Buttons mit data-mxh-close="<wert>")
+ *   mxhModal.open(html, {wide, x, label})            -> Promise<any>  (Buttons mit data-mxh-close="<wert>")
  *   mxhModal.close()
+ *
+ * Seit 0.15.0 (UI-Kit Phase 4): Tab bleibt im obersten Dialog (Fokusfalle),
+ * beim Schließen kehrt der Fokus zum Auslöser zurück, der Titel benennt den
+ * Dialog (aria-labelledby). `x: true` setzt oben rechts einen Schließen-Knopf
+ * (.mxh-modal-x, auch für eigene Inhalte nutzbar: <button class="mxh-modal-x"
+ * data-mxh-close aria-label="Schließen">×</button>). `label` benennt einen
+ * Dialog ohne sichtbaren Titel.
  * ════════════════════════════════════════════════════════════════ */
 (function (global) {
   'use strict';
 
   var ROOT_ID = 'mxh-modal-root';
   var stack = [];   // { cancelValue, _done }
+  var ausloeser = null;   // Element mit Fokus vor dem ersten Dialog
+  var titelNr = 0;
+
+  var FOKUSSIERBAR = 'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), ' +
+    'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function fokussierbare(card) {
+    return Array.prototype.filter.call(card.querySelectorAll(FOKUSSIERBAR), function (el) {
+      return !el.hasAttribute('hidden') && (el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+    });
+  }
 
   function ensureRoot() {
     var r = document.getElementById(ROOT_ID);
@@ -26,7 +44,7 @@
     r.id = ROOT_ID;
     r.className = 'mxh-modal-overlay';
     r.setAttribute('hidden', '');
-    r.innerHTML = '<div class="mxh-modal-card" role="dialog" aria-modal="true"></div>';
+    r.innerHTML = '<div class="mxh-modal-card" role="dialog" aria-modal="true" tabindex="-1"></div>';
     document.body.appendChild(r);
     r.addEventListener('mousedown', function (e) { if (e.target === r) cancelTop(); });
     return r;
@@ -39,7 +57,17 @@
 
   document.addEventListener('keydown', function (e) {
     if (!stack.length) return;
-    if (e.key === 'Escape') { e.stopPropagation(); cancelTop(); }
+    if (e.key === 'Escape') { e.stopPropagation(); cancelTop(); return; }
+    if (e.key !== 'Tab') return;
+    // Fokusfalle: Tab und Umschalt+Tab laufen im Dialog im Kreis.
+    var card = document.querySelector('#' + ROOT_ID + ' .mxh-modal-card');
+    if (!card) return;
+    var els = fokussierbare(card);
+    if (!els.length) { e.preventDefault(); card.focus(); return; }
+    var erstes = els[0], letztes = els[els.length - 1], akt = document.activeElement;
+    if (!card.contains(akt)) { e.preventDefault(); erstes.focus(); }
+    else if (e.shiftKey && (akt === erstes || akt === card)) { e.preventDefault(); letztes.focus(); }
+    else if (!e.shiftKey && akt === letztes) { e.preventDefault(); erstes.focus(); }
   }, true);
 
   function esc(s) {
@@ -58,13 +86,35 @@
         var idx = stack.indexOf(entry);
         if (idx === -1) return;
         stack.splice(idx, 1);
-        if (!stack.length) { root.setAttribute('hidden', ''); card.innerHTML = ''; }
+        if (!stack.length) {
+          root.setAttribute('hidden', ''); card.innerHTML = '';
+          var zurueck = ausloeser; ausloeser = null;
+          if (zurueck && document.contains(zurueck)) { try { zurueck.focus(); } catch (e) {} }
+        }
         resolve(val);
       };
+      if (!stack.length) ausloeser = document.activeElement;
       stack.push(entry);
       card.classList.toggle('mxh-modal-wide', !!opts.wide);
       root.removeAttribute('hidden');
       buildBody(card, entry._done);
+      if (opts.x && !card.querySelector('.mxh-modal-x')) {
+        card.insertAdjacentHTML('afterbegin',
+          '<button type="button" class="mxh-modal-x" aria-label="Schließen">×</button>');
+      }
+      Array.prototype.forEach.call(card.querySelectorAll('.mxh-modal-x:not([data-mxh-close])'), function (b) {
+        b.addEventListener('click', function () { entry._done(entry.cancelValue); });
+      });
+      // Den Dialog benennen: sichtbarer Titel, sonst opts.label.
+      var titel = card.querySelector('.mxh-modal-title, h1, h2, h3');
+      card.removeAttribute('aria-labelledby'); card.removeAttribute('aria-label');
+      if (titel) {
+        if (!titel.id) titel.id = 'mxh-modal-titel-' + (++titelNr);
+        card.setAttribute('aria-labelledby', titel.id);
+      } else if (opts.label) {
+        card.setAttribute('aria-label', opts.label);
+      }
+      if (!card.contains(document.activeElement)) { try { card.focus(); } catch (e) {} }
     });
   }
 
@@ -113,8 +163,11 @@
         card.innerHTML = header(opts.title) +
           '<div class="mxh-modal-msg">' + esc(message) + '</div>' +
           actions(opts.okText || 'OK', opts.cancelText || 'Abbrechen', !!opts.danger);
-        card.querySelector('.mxh-modal-ok').addEventListener('click', function () { done(true); });
-        card.querySelector('.mxh-modal-cancel').addEventListener('click', function () { done(false); });
+        var ok = card.querySelector('.mxh-modal-ok'), ab = card.querySelector('.mxh-modal-cancel');
+        ok.addEventListener('click', function () { done(true); });
+        ab.addEventListener('click', function () { done(false); });
+        // Bei Gefahr liegt der Fokus auf „Abbrechen" — Enter löscht nicht aus Versehen.
+        try { (opts.danger ? ab : ok).focus(); } catch (e) {}
       }, false, opts);
     },
 
