@@ -6,6 +6,9 @@
  * Wird im Portal als /core/tokens.css VOR allen anderen Stylesheets geladen.
  * Seiten dürfen einzelne Tokens danach überschreiben (z. B. der Spiele-
  * Beamer); alles andere kommt aus dieser Datei.
+ *
+ * Enthält seit 0.9.0 außer den Tokens auch die Basis-Regeln aller Portal-
+ * Seiten (Fokus, dunkle Bedienelemente, Scrollbalken, reduzierte Bewegung).
  */
 :root {
   --bg: #0c3242;
@@ -28,4 +31,35 @@
   --font-mono: 'IBM Plex Mono','Courier New',monospace;
   --mono: 'IBM Plex Mono','Courier New',monospace;
   --shadow: 0 4px 28px rgba(0,0,0,0.55);
+}
+
+/* ── Basis-Regeln (UI-Kit Phase 1) ─────────────────────────────────────
+ * Dunkles Portal: native Bedienelemente (Datums-Picker, Auswahllisten,
+ * Scrollbalken, Autofill) dunkel rendern; Häkchen, Radios und Regler in der
+ * Akzentfarbe.
+ */
+:root { color-scheme: dark; accent-color: var(--accent2); }
+
+/* Sichtbarer Tastatur-Fokus überall. Apps dürfen ihn nicht mit
+ * `outline: none` abschalten (Wächter tests/test_ui_basis.py im Website-Repo). */
+:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+/* Kalender-Symbol nativer Datums-/Zeitfelder auf dunklem Grund sichtbar. */
+::-webkit-calendar-picker-indicator { filter: invert(0.85); cursor: pointer; }
+
+/* Dünne, getönte Scrollbalken. Ausblenden nur gezielt mit .no-scrollbar —
+ * wirkt auf das Element und alles darin (z. B. <body class="no-scrollbar">). */
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+.no-scrollbar, .no-scrollbar * { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar, .no-scrollbar *::-webkit-scrollbar { display: none; }
+
+/* Wer Bewegung reduziert haben möchte, bekommt keine Animationen. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
 }

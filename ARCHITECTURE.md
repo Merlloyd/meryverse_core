@@ -60,7 +60,10 @@ API:
 - `list_schemes() → ["meryverse", "vodafone"]`
 - `get_css_variables(scheme="meryverse") → dict[str, str]`
 - `get_css_block(scheme="meryverse") → str`   (`":root { --bg: …; }"`)
-- `get_tokens_css(scheme="meryverse") → str`  Inhalt von `js/tokens.css` (seit 0.8.0;
+- `get_tokens_css(scheme="meryverse") → str`  Inhalt von `js/tokens.css` — seit 0.9.0 inkl.
+  `PORTAL_BASIS_CSS` (Fokusring, `color-scheme`, `accent-color`, Scrollbalken + `.no-scrollbar`,
+  reduzierte Bewegung; Begründung „gleiche Datei statt base.css" im Kommentar über der Konstante).
+  Ursprung 0.8.0 (
   Kopfkommentar + `get_css_block`). Das Portal lädt die Datei als `/core/tokens.css`
   vor allen anderen Stylesheets — Plan `plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md`
   (Workspace), Phase 0.

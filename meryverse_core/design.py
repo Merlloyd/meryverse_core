@@ -137,13 +137,59 @@ TOKENS_CSS_HEADER = """/* meryverse_core — Design-Tokens (Scheme "meryverse")
  * Wird im Portal als /core/tokens.css VOR allen anderen Stylesheets geladen.
  * Seiten dürfen einzelne Tokens danach überschreiben (z. B. der Spiele-
  * Beamer); alles andere kommt aus dieser Datei.
+ *
+ * Enthält seit 0.9.0 außer den Tokens auch die Basis-Regeln aller Portal-
+ * Seiten (Fokus, dunkle Bedienelemente, Scrollbalken, reduzierte Bewegung).
  */
 """
 
 
+# Basis-Regeln für jede Portal-Seite (UI-Kit Phase 1, Workspace-Plan
+# plans/2026-10-03-ui-bedienelemente-vereinheitlichen.md). Sie stehen in
+# derselben Datei wie die Tokens, weil jede Seite tokens.css bereits als ERSTES
+# Stylesheet lädt: Eine eigene base.css hätte eine neue Route, einen Eintrag in
+# der allowed-Menge von require_login und einen Link in jedem Template
+# gebraucht — genau die Fehlerklasse von V3.153.4. Und weil die Datei zuerst
+# kommt, behalten bewusste Abweichungen der Apps das letzte Wort.
+# Alle Selektoren sind absichtlich schwach (Spezifität 0 bzw. eine Klasse).
+PORTAL_BASIS_CSS = """
+/* ── Basis-Regeln (UI-Kit Phase 1) ─────────────────────────────────────
+ * Dunkles Portal: native Bedienelemente (Datums-Picker, Auswahllisten,
+ * Scrollbalken, Autofill) dunkel rendern; Häkchen, Radios und Regler in der
+ * Akzentfarbe.
+ */
+:root { color-scheme: dark; accent-color: var(--accent2); }
+
+/* Sichtbarer Tastatur-Fokus überall. Apps dürfen ihn nicht mit
+ * `outline: none` abschalten (Wächter tests/test_ui_basis.py im Website-Repo). */
+:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+/* Kalender-Symbol nativer Datums-/Zeitfelder auf dunklem Grund sichtbar. */
+::-webkit-calendar-picker-indicator { filter: invert(0.85); cursor: pointer; }
+
+/* Dünne, getönte Scrollbalken. Ausblenden nur gezielt mit .no-scrollbar —
+ * wirkt auf das Element und alles darin (z. B. <body class="no-scrollbar">). */
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+.no-scrollbar, .no-scrollbar * { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar, .no-scrollbar *::-webkit-scrollbar { display: none; }
+
+/* Wer Bewegung reduziert haben möchte, bekommt keine Animationen. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}
+"""
+
+
 def get_tokens_css(scheme: str = DEFAULT_SCHEME) -> str:
-    """Return the content of the static token stylesheet (js/tokens.css)."""
-    return TOKENS_CSS_HEADER + get_css_block(scheme) + "\n"
+    """Return the content of the static token stylesheet (js/tokens.css):
+    header, the scheme's :root block and the portal base rules."""
+    return TOKENS_CSS_HEADER + get_css_block(scheme) + "\n" + PORTAL_BASIS_CSS
 
 
 if __name__ == "__main__":  # pragma: no cover

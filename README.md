@@ -71,6 +71,11 @@ css_root = design.get_css_block(scheme="vodafone")
 css_file = design.get_tokens_css()                 # == js/tokens.css
 ```
 
+Since 0.9.0 the file also carries the **portal base rules** (`PORTAL_BASIS_CSS`:
+`color-scheme: dark`, global `:focus-visible` ring, `accent-color`, thin scrollbars with a
+`.no-scrollbar` opt-out, `prefers-reduced-motion`) — every portal page already loads it first,
+so a separate `base.css` would only add a route, a login exception and a link per template.
+
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
 fails if the file is stale.

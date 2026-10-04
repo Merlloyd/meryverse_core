@@ -39,3 +39,23 @@ def test_portal_kernwerte_unveraendert():
 def test_mono_und_font_mono_gleich():
     t = design.get_css_variables("meryverse")
     assert t["mono"] == t["font-mono"]
+
+
+def test_basis_regeln_enthalten():
+    # UI-Kit Phase 1: jede Portal-Seite bekommt die Basis-Regeln mit tokens.css.
+    css = design.get_tokens_css()
+    for teil in (":root { color-scheme: dark; accent-color: var(--accent2); }",
+                 ":focus-visible { outline: 2px solid var(--accent2)",
+                 "prefers-reduced-motion: reduce",
+                 ".no-scrollbar, .no-scrollbar *",
+                 "::-webkit-calendar-picker-indicator"):
+        assert teil in css, teil
+
+
+def test_kern_assets_schalten_fokus_nicht_ab():
+    # Der globale :focus-visible-Ring darf nicht von den geteilten Komponenten
+    # selbst wieder abgeschaltet werden.
+    import re
+    for name in ("modal.css", "feedback.css"):
+        text = (ROOT / "js" / name).read_text(encoding="utf-8")
+        assert not re.search(r"outline\s*:\s*(none|0)\b", text), name
