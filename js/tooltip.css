@@ -1,0 +1,14 @@
+/* meryverse_core — Tooltip (Meryverse-Mouseover), UI-Kit Phase 4 Teil 2, seit 0.16.0.
+ * Gehört zu tooltip.js; Werte aus dem Chor (.mv-tip). */
+.mxh-tip {
+  position: fixed; z-index: var(--z-tooltip, 4000); pointer-events: none;
+  max-width: min(280px, calc(100vw - 16px)); box-sizing: border-box;
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28)); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); padding: 7px 9px;
+  font: 400 0.78rem/1.4 var(--font, 'IBM Plex Sans', sans-serif);
+  overflow-wrap: break-word;
+}
+.mxh-tip[hidden] { display: none; }
+.mxh-tip b { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text2, #C6DABF); margin-bottom: 2px; }
+.mxh-tip--nur-titel b { margin-bottom: 0; color: var(--text, #F3E9D2); }

@@ -25,7 +25,7 @@ def test_ebenen_reihenfolge():
 
 def test_komponenten_nutzen_die_ebenen():
     # Keine festen z-index-Zahlen mehr in den geteilten Komponenten.
-    for name in ("modal.css", "feedback.css", "toast.css"):
+    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css"):
         for wert in re.findall(r"z-index\s*:\s*([^;]+);", _lies(name)):
             assert wert.strip().startswith("var(--z-"), (name, wert)
 
@@ -52,7 +52,31 @@ def test_toast_api():
 
 
 def test_keine_harten_weiss_und_rottoene():
-    for name in ("modal.css", "toast.css", "feedback.css"):
+    for name in ("modal.css", "toast.css", "feedback.css", "status.css", "tooltip.css"):
         text = re.sub(r"/\*.*?\*/", "", _lies(name), flags=re.S)
         for verboten in ("#fff;", "#ef4444", "#dc2626", "color: #0c3242"):
             assert verboten not in text, (name, verboten)
+
+
+def test_status_bausteine():
+    css = _lies("status.css")
+    for teil in (".mxh-overlay {", ".mxh-overlay[hidden]", ".mxh-dialog {", ".mxh-x {",
+                 ".mxh-empty {", ".mxh-loading {", ".mxh-spinner", ".mxh-progress {",
+                 ".mxh-flash--ok {", ".mxh-flash--err {", "var(--z-overlay"):
+        assert teil in css, teil
+
+
+def test_status_nur_mxh_klassen():
+    ohne = re.sub(r"/\*.*?\*/", "", _lies("status.css"), flags=re.S)
+    for m in re.finditer(r"([^{}]*)\{[^{}]*\}", ohne):
+        for s in m.group(1).split(","):
+            s = s.strip()
+            if s and not s.startswith(("@", "to", "from")):
+                assert s.startswith(".mxh-"), s
+
+
+def test_tooltip():
+    js = _lies("tooltip.js")
+    assert "global.mxhTip" in js and "'[data-tip-t], [data-tip]'" in js
+    assert "esc(titel)" in js and "esc(text)" in js        # kein HTML aus Attributen
+    assert "var(--z-tooltip" in _lies("tooltip.css")

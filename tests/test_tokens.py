@@ -56,7 +56,7 @@ def test_kern_assets_schalten_fokus_nicht_ab():
     # Der globale :focus-visible-Ring darf nicht von den geteilten Komponenten
     # selbst wieder abgeschaltet werden.
     import re
-    for name in ("modal.css", "feedback.css"):
+    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css"):
         text = (ROOT / "js" / name).read_text(encoding="utf-8")
         assert not re.search(r"outline\s*:\s*(none|0)\b", text), name
 

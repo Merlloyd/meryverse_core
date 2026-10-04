@@ -1,0 +1,94 @@
+/* ════════════════════════════════════════════════════════════════
+ * meryverse_core — App-Dialoge und Statusanzeigen, UI-Kit Phase 4 Teil 2, seit 0.16.0
+ *
+ * Handgeschrieben; das Portal lädt die Datei auf jeder Seite direkt nach
+ * controls.css (/static/core/status.css). Nur .mxh-Klassen, nur Token-Farben.
+ *
+ * App-Dialog (eigener Inhalt, eigenes JS — für Rückfragen bleibt mxhModal):
+ *   <div class="mxh-overlay" hidden>
+ *     <div class="mxh-dialog" role="dialog" aria-modal="true" aria-labelledby="…">
+ *       <button class="mxh-x" aria-label="Schließen">×</button> …
+ *   Größe, Fußleiste und Bottom-Sheet-Form bleiben Sache der App.
+ *
+ * Status:  .mxh-empty (+ --karte)   leerer Zustand
+ *          .mxh-loading              „Lade …" mit Kreisel; .mxh-spinner allein
+ *          .mxh-progress > span      Fortschrittsbalken (Breite per style)
+ *          .mxh-flash (+ --ok/--err) Hinweisbalken im Fluss (Login, Profil …)
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── App-Dialog ─────────────────────────────────────────────────── */
+.mxh-overlay {
+  position: fixed; inset: 0; z-index: var(--z-overlay, 1000);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; box-sizing: border-box;
+  background: var(--overlay, rgba(6, 24, 33, 0.72));
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.mxh-overlay[hidden] { display: none; }
+.mxh-dialog {
+  position: relative; box-sizing: border-box;
+  width: 100%; max-width: 560px; max-height: calc(100dvh - 32px); overflow-y: auto;
+  background: var(--surface, #114B5F); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-radius: 14px; padding: 20px 22px;
+  box-shadow: var(--shadow-pop, 0 18px 50px rgba(0, 0, 0, 0.45));
+}
+/* Schließen-Kreuz: gleiche Form wie .mxh-modal-x in modal.css. */
+.mxh-x {
+  box-sizing: border-box; flex: none;
+  width: var(--ctl-h, 36px); height: var(--ctl-h, 36px); padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius, 10px);
+  color: var(--text2, #C6DABF); font: 400 1.35rem/1 var(--font, sans-serif); cursor: pointer;
+}
+.mxh-x:hover { background: var(--surface2, #1a5d74); border-color: var(--border2, rgba(136, 212, 152, 0.28)); color: var(--text, #F3E9D2); }
+.mxh-dialog > .mxh-x:first-child { position: absolute; top: 8px; right: 8px; }
+
+/* ── Leer ───────────────────────────────────────────────────────── */
+.mxh-empty {
+  padding: 24px 16px; text-align: center;
+  color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.9rem; line-height: 1.5;
+}
+.mxh-empty--karte {
+  border: 1px dashed var(--border2, rgba(136, 212, 152, 0.28)); border-radius: var(--radius, 10px);
+}
+
+/* ── Laden ──────────────────────────────────────────────────────── */
+.mxh-spinner, .mxh-loading::before {
+  content: ""; display: inline-block; flex: none; box-sizing: border-box;
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border2, rgba(136, 212, 152, 0.28));
+  border-top-color: var(--accent2, #88D498);
+  animation: mxh-dreh 0.8s linear infinite; vertical-align: -3px;
+}
+.mxh-loading {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 24px 16px; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.9rem;
+}
+@keyframes mxh-dreh { to { transform: rotate(360deg); } }
+
+/* ── Fortschritt ────────────────────────────────────────────────── */
+.mxh-progress {
+  height: 8px; border-radius: 999px; overflow: hidden;
+  background: var(--surface2, #1a5d74);
+}
+.mxh-progress > span, .mxh-progress > .mxh-progress-bar {
+  display: block; height: 100%; width: 0; border-radius: inherit;
+  background: var(--accent2, #88D498); transition: width 0.2s ease;
+}
+
+/* ── Hinweisbalken ──────────────────────────────────────────────── */
+.mxh-flash {
+  padding: 10px 14px; margin-bottom: 16px; border-radius: var(--radius, 10px);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  font-size: 0.9rem; line-height: 1.45;
+}
+.mxh-flash--ok {
+  border-color: var(--accent2, #88D498); color: var(--accent2, #88D498);
+  background: color-mix(in srgb, var(--accent2, #88D498) 10%, transparent);
+}
+.mxh-flash--err {
+  border-color: color-mix(in srgb, var(--neg, #f87171) 45%, transparent); color: var(--neg, #f87171);
+  background: color-mix(in srgb, var(--neg, #f87171) 10%, transparent);
+}

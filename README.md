@@ -45,6 +45,8 @@ meryverse_core/
 │   ├── controls.css            # buttons and fields .mxh-btn/.mxh-input … (portal: /static/core/)
 │   ├── modal.{css,js}          # mxhModal alert/confirm/prompt/open (portal: /core/modal.*)
 │   ├── toast.{css,js}          # mxhToast(text, {kind, ms}) (portal: /static/core/)
+│   ├── status.css              # app dialogs .mxh-overlay/.mxh-dialog/.mxh-x, empty/loading/progress/flash
+│   ├── tooltip.{css,js}        # [data-tip-t]/[data-tip] mouseover, keyboard, touch long-press
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -101,6 +103,13 @@ trigger, names the dialog (`aria-labelledby`) and offers a close button `.mxh-mo
 (`open(html, {x: true})`); `confirm(…, {danger: true})` focuses *Cancel*. `js/toast.{css,js}`
 provide `mxhToast(text, {kind: 'ok'|'err'|'info', ms})`, stacked bottom centre (raise with
 `--toast-unten`). The feedback button sits below every dialog. Tests: `tests/test_popups.py`.
+
+Since 0.16.0 `js/status.css` (portal: every page, right after `controls.css`) gives app-owned
+dialogs one frame — `.mxh-overlay` (z `--z-overlay`, `--overlay`, blur) + `.mxh-dialog` + close
+button `.mxh-x` — and the status patterns `.mxh-empty(--karte)`, `.mxh-loading`/`.mxh-spinner`,
+`.mxh-progress > span`, `.mxh-flash(--ok|--err)`. `js/tooltip.{css,js}` is the former chor
+mouseover as a core component: `data-tip-t` (bold title) + `data-tip` (text), delegated, also on
+keyboard focus and touch long-press.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
