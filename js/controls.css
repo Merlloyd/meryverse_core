@@ -231,8 +231,16 @@ select.mxh-input {
 }
 .mxh-seg-btn:hover { color: var(--text); background: var(--surface2); }
 .mxh-seg-btn[aria-pressed="true"], .mxh-seg-btn[aria-selected="true"],
-.mxh-seg-btn[aria-current="page"], .mxh-seg-btn[aria-current="step"] {
+.mxh-seg-btn[aria-current="step"] {
   color: var(--on-accent); background: var(--accent2); font-weight: 600;
+}
+/* Navigation (aria-current="page") ist keine Aktion: leise wie ein Reiter —
+   hellgrüne Schrift mit Unterstrich statt gefüllter Fläche. Gefüllt-grün
+   bleibt der Hauptaktion und echten Umschaltern vorbehalten (Betreiber
+   2026-10-04, Kopfnavigation Lernkarten/Spiele). */
+.mxh-seg-btn[aria-current="page"] {
+  color: var(--accent2); background: transparent; font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--accent2); border-radius: 0;
 }
 .mxh-seg-btn:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
 
