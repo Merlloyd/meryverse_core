@@ -31,24 +31,24 @@
   box-sizing: border-box; width: var(--ctl-h, 36px); height: var(--ctl-h, 36px);
   display: inline-flex; align-items: center; justify-content: center; padding: 0;
   background: transparent; border: 1px solid transparent; border-radius: var(--radius, 10px);
-  color: var(--text2, #C6DABF); font: 400 1.35rem/1 var(--font, sans-serif); cursor: pointer;
+  color: var(--text2, #C6DABF); font: 400 var(--fs-2xl, 1.375rem)/1 var(--font, sans-serif); cursor: pointer;
 }
 .mxh-modal-x:hover { background: var(--surface2, #1a5d74); border-color: var(--border2, rgba(136, 212, 152, 0.28)); color: var(--text, #F3E9D2); }
 .mxh-modal-card:has(> .mxh-modal-x) > .mxh-modal-title,
 .mxh-modal-card:has(> .mxh-modal-x) > :is(h1, h2, h3):first-of-type { padding-right: 40px; }
 
-.mxh-modal-title { margin: 0 0 12px; font-size: 1.05rem; color: var(--text, #F3E9D2); }
-.mxh-modal-msg { font-size: 0.9rem; color: var(--text2, #C6DABF); white-space: pre-wrap; line-height: 1.45; }
-.mxh-modal-label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text2, #C6DABF); }
+.mxh-modal-title { margin: 0 0 12px; font-size: var(--fs-lg, 1rem); color: var(--text, #F3E9D2); }
+.mxh-modal-msg { font-size: var(--fs-base, 0.875rem); color: var(--text2, #C6DABF); white-space: pre-wrap; line-height: 1.45; }
+.mxh-modal-label { display: block; margin-bottom: 6px; font-size: var(--fs-base, 0.875rem); color: var(--text2, #C6DABF); }
 
 .mxh-modal-input {
   width: 100%; box-sizing: border-box; padding: 6px 12px;
   background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28)); border-radius: var(--radius, 10px);
-  font-family: var(--font, sans-serif); font-size: 0.9rem; min-height: 36px;
+  font-family: var(--font, sans-serif); font-size: var(--fs-base, 0.875rem); min-height: 36px;
 }
 .mxh-modal-input:focus { border-color: var(--accent2, #88D498); }
-.mxh-modal-err { margin-top: 8px; font-size: 0.82rem; color: var(--neg, #f87171); }
+.mxh-modal-err { margin-top: 8px; font-size: var(--fs-md, 0.8125rem); color: var(--neg, #f87171); }
 
 /* Knöpfe: dieselben Werte wie .mxh-btn in controls.css (UI-Kit Phase 3, F1:
    Primär hellgrün mit dunkler Schrift, Gefahr in --neg). Bleibt eigenständig,
@@ -56,7 +56,7 @@
 .mxh-modal-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .mxh-modal-btn {
   box-sizing: border-box; min-height: 36px; padding: 0 14px;
-  font-family: var(--font, sans-serif); font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  font-family: var(--font, sans-serif); font-size: var(--fs-base, 0.875rem); font-weight: 500; cursor: pointer;
   border-radius: var(--radius, 10px);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
   transition: background-color 0.15s, filter 0.15s;

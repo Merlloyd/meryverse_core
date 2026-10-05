@@ -43,7 +43,7 @@
   background: var(--bg, #0c3242);
   color: var(--text3, rgba(198, 218, 191, 0.65));
   font-family: var(--mono, var(--font-mono, 'IBM Plex Mono', 'Courier New', monospace));
-  font-size: 11px;
+  font-size: var(--fs-xs, 0.6875rem);
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.15s;
@@ -52,7 +52,7 @@
   color: var(--text2, #C6DABF);
   border-color: var(--border2, rgba(136, 212, 152, 0.28));
 }
-.mxh-fb-fab span:first-child { font-size: 13px; line-height: 1; }
+.mxh-fb-fab span:first-child { font-size: var(--fs-md, 0.8125rem); line-height: 1; }
 @media (max-width: 600px) {
   /* Footer stapelt auf Mobile (höher) → Button weiter nach oben. */
   .mxh-fb-fab { bottom: 100px; }
@@ -85,12 +85,12 @@
   justify-content: space-between;
   margin-bottom: 12px;
 }
-.mxh-fb-modal-head h3 { margin: 0; font-size: 17px; }
+.mxh-fb-modal-head h3 { margin: 0; font-size: var(--fs-xl, 1.125rem); }
 .mxh-fb-x {
   background: none;
   border: none;
   color: var(--text3, rgba(198, 218, 191, 0.65));
-  font-size: 18px;
+  font-size: var(--fs-xl, 1.125rem);
   cursor: pointer;
   line-height: 1;
 }
@@ -107,13 +107,13 @@
   border-radius: var(--radius, 10px);
   padding: 10px 12px;
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
-  font-size: 14px;
+  font-size: var(--fs-base, 0.875rem);
 }
 .mxh-fb-textarea:focus,
 .mxh-fb-pop-textarea:focus {
   border-color: var(--accent2, #88D498);
 }
-.mxh-fb-hint { min-height: 16px; font-size: 12px; color: var(--text3, rgba(198, 218, 191, 0.65)); margin-top: 6px; }
+.mxh-fb-hint { min-height: 16px; font-size: var(--fs-sm, 0.75rem); color: var(--text3, rgba(198, 218, 191, 0.65)); margin-top: 6px; }
 
 .mxh-fb-modal-actions,
 .mxh-fb-pop-actions {
@@ -134,7 +134,7 @@
   background: transparent;
   color: var(--text, #F3E9D2);
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
-  font-size: 13px;
+  font-size: var(--fs-md, 0.8125rem);
   cursor: pointer;
   transition: background-color 0.15s, filter 0.15s;
 }
@@ -161,7 +161,7 @@
   padding: 12px;
   color: var(--text, #F3E9D2);
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
-  font-size: 13px;
+  font-size: var(--fs-md, 0.8125rem);
 }
 .mxh-fb-pop-quote {
   font-style: italic;
@@ -175,14 +175,14 @@
 .mxh-fb-pop-status { font-weight: 600; margin-bottom: 6px; }
 .mxh-fb-pop-komm { margin-bottom: 6px; }
 .mxh-fb-pop-notiz {
-  font-size: 12px;
+  font-size: var(--fs-sm, 0.75rem);
   color: var(--text2, #C6DABF);
   background: var(--bg, #0c3242);
   border-radius: 6px;
   padding: 6px 8px;
   margin-bottom: 6px;
 }
-.mxh-fb-pop-meta { font-size: 11px; color: var(--text3, rgba(198, 218, 191, 0.65)); }
+.mxh-fb-pop-meta { font-size: var(--fs-xs, 0.6875rem); color: var(--text3, rgba(198, 218, 191, 0.65)); }
 
 /* ── Toast / „Danke" ─────────────────────────────────────────────────── */
 .mxh-fb-toast {
@@ -197,7 +197,7 @@
   border: 1px solid var(--accent2, #88D498);
   border-radius: var(--radius, 10px);
   font-family: var(--font, 'IBM Plex Sans', sans-serif);
-  font-size: 0.9rem;
+  font-size: var(--fs-base, 0.875rem);
   color: var(--text, #F3E9D2);
   background: var(--surface2, #1a5d74);
   box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));

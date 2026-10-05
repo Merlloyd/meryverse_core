@@ -18,7 +18,7 @@
   background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
   border: 1px solid var(--accent2, #88D498); border-radius: var(--radius, 10px);
   box-shadow: var(--shadow, 0 4px 28px rgba(0, 0, 0, 0.55));
-  font: 400 0.9rem/1.4 var(--font, 'IBM Plex Sans', sans-serif);
+  font: 400 var(--fs-base, 0.875rem)/1.4 var(--font, 'IBM Plex Sans', sans-serif);
   overflow-wrap: break-word; white-space: pre-line; text-align: center;
   cursor: pointer; pointer-events: auto;
   opacity: 0; transform: translateY(12px);

@@ -166,6 +166,13 @@ chor registers `piano`, `noten`, `midi` …), and `<span data-mxh-icon="name"></
 automatically (MutationObserver) — handy in Jinja templates. Size in `controls.css`: `.mxh-ico` 1.15em in
 text, 18 px inside `.mxh-btn`/`.mxh-chip`/`.mxh-linkbtn`.
 
+Since 0.23.0 (UI-kit phase 8) `tokens.css` has a **font-size scale** — eight steps instead of ~110 values,
+no hard minimum (F2): `--fs-2xs` 10 px, `--fs-xs` 11, `--fs-sm` 12, `--fs-md` 13, `--fs-base` 14, `--fs-lg` 16,
+`--fs-xl` 18, `--fs-2xl` 22, plus `--fs-titel` (`clamp(1.5rem, 3vw, 2rem)`). All portal components use it
+(components that may run without `tokens.css` carry rem fallbacks); only display sizes ≥ 24 px, relative
+`em`/`cqh` values and the 16 px iOS-zoom guard of fields stay literal. `frame.css` adds `.mxh-titel` (page
+title, weight 300) and `.mxh-abschnitt` (section title, 500, `--fs-lg`).
+
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
 fails if the file is stale.

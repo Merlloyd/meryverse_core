@@ -80,3 +80,26 @@ def test_textfeld_ring_nur_bei_tastatur():
     fokus = (ROOT / "js" / "fokus.js").read_text(encoding="utf-8")
     assert "classList.add('mxh-maus')" in fokus
     assert "e.key === 'Tab'" in fokus
+
+
+def test_schriftgroessen_skala():
+    # UI-Kit Phase 8 (0.23.0): acht Stufen + Seitentitel, ohne Untergrenze (F2).
+    css = (ROOT / "js" / "tokens.css").read_text(encoding="utf-8")
+    for teil in ("--fs-2xs: 0.625rem", "--fs-xs: 0.6875rem", "--fs-sm: 0.75rem", "--fs-md: 0.8125rem",
+                 "--fs-base: 0.875rem", "--fs-lg: 1rem", "--fs-xl: 1.125rem", "--fs-2xl: 1.375rem",
+                 "--fs-titel: clamp(1.5rem, 3vw, 2rem)"):
+        assert teil in css, teil
+
+
+def test_portal_bausteine_nutzen_die_skala():
+    # Kein fester px/rem-Wert unter 24 px in den Portal-Bausteinen (design_system/lock_screen
+    # gehören zu den Generator-Apps, eigener Folgeplan F6).
+    import re
+    for name in ("frame.css", "controls.css", "status.css", "toast.css", "tooltip.css", "modal.css",
+                 "feedback.css", "menu.css", "datepicker.css"):
+        for zeile in (ROOT / "js" / name).read_text(encoding="utf-8").splitlines():
+            if "iOS" in zeile:      # Zoom-Schutz der Felder: bewusst feste 16 px
+                continue
+            for v in re.findall(r"font-size\s*:\s*([\d.]+)(px|rem)", zeile):
+                px = float(v[0]) * (16 if v[1] == "rem" else 1)
+                assert px >= 24, (name, v)

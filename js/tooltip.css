@@ -6,9 +6,9 @@
   background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28)); border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); padding: 7px 9px;
-  font: 400 0.78rem/1.4 var(--font, 'IBM Plex Sans', sans-serif);
+  font: 400 var(--fs-sm, 0.75rem)/1.4 var(--font, 'IBM Plex Sans', sans-serif);
   overflow-wrap: break-word;
 }
 .mxh-tip[hidden] { display: none; }
-.mxh-tip b { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text2, #C6DABF); margin-bottom: 2px; }
+.mxh-tip b { display: block; font-size: var(--fs-sm, 0.75rem); font-weight: 600; color: var(--text2, #C6DABF); margin-bottom: 2px; }
 .mxh-tip--nur-titel b { margin-bottom: 0; color: var(--text, #F3E9D2); }

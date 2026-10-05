@@ -15,7 +15,7 @@
   background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  font: 400 0.85rem/1.35 var(--font, 'IBM Plex Sans', sans-serif);
+  font: 400 var(--fs-base, 0.875rem)/1.35 var(--font, 'IBM Plex Sans', sans-serif);
 }
 .mxh-menu-sub { min-width: 160px; }   /* eigene feste Ebene am Host, s. menu.js */
 
@@ -42,7 +42,7 @@
 .mxh-menu-icon svg { width: 16px; height: 16px; }
 .mxh-menu-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
 .mxh-menu-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.mxh-menu-hint { flex: none; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.78rem; }
+.mxh-menu-hint { flex: none; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: var(--fs-sm, 0.75rem); }
 .mxh-menu-arrow { flex: none; color: var(--text3, rgba(198, 218, 191, 0.65)); }
 .mxh-menu-sep { flex: none; height: 1px; margin: 4px 6px; background: var(--border, rgba(136, 212, 152, 0.15)); }
 .mxh-menu-leer { padding: 8px 10px; color: var(--text3, rgba(198, 218, 191, 0.65)); font-style: italic; }
@@ -51,7 +51,7 @@
 .mxh-menu-head {
   flex: none; display: flex; align-items: center; gap: 8px;
   padding: 4px 6px 6px 10px; margin-bottom: 4px;
-  font-size: 0.78rem; font-weight: 600; color: var(--text3, rgba(198, 218, 191, 0.75));
+  font-size: var(--fs-sm, 0.75rem); font-weight: 600; color: var(--text3, rgba(198, 218, 191, 0.75));
   border-bottom: 1px solid var(--border, rgba(136, 212, 152, 0.15));
 }
 .mxh-menu-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -73,7 +73,7 @@
 .mxh-menu-flat { display: flex; flex-direction: column; }
 .mxh-menu-flat.mxh-menu-indent { padding-left: 14px; }
 .mxh-menu-group {
-  padding: 6px 10px 2px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em;
+  padding: 6px 10px 2px; font-size: var(--fs-sm, 0.75rem); font-weight: 600; letter-spacing: 0.03em;
   color: var(--text3, rgba(198, 218, 191, 0.65)); text-transform: uppercase;
 }
 
@@ -86,6 +86,6 @@
   left: 0 !important; right: 0; bottom: 0; top: auto !important;
   width: 100%; max-width: none; max-height: 70vh;
   border-radius: 14px 14px 0 0; padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
-  font-size: 0.95rem;
+  font-size: var(--fs-lg, 1rem);
 }
 .mxh-menu--sheet .mxh-menu-item { min-height: 44px; }

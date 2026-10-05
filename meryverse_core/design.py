@@ -200,6 +200,19 @@ html.mxh-maus :is(input:not([type=checkbox], [type=radio], [type=range], [type=b
   --shadow-pop: 0 18px 50px rgba(0,0,0,0.45);
 }
 
+/* Schriftgrößen (UI-Kit Phase 8, seit 0.23.0) — acht Stufen statt 109 Werte.
+ * Ohne feste Untergrenze (F2): --fs-2xs bleibt für dichte Mono-Etiketten
+ * (Wochenplaner). Größer als --fs-2xl nur Sonderanzeigen (Timer, Beamer) mit
+ * eigenem Wert; relative Angaben (em, cqh) bleiben erlaubt.
+ *   --fs-2xs 10  --fs-xs 11  --fs-sm 12  --fs-md 13  --fs-base 14
+ *   --fs-lg 16   --fs-xl 18  --fs-2xl 22   (px bei 16 px Grundgröße)
+ *   --fs-titel   Seitentitel (Gewicht 300, frame.css .mxh-titel) */
+:root {
+  --fs-2xs: 0.625rem; --fs-xs: 0.6875rem; --fs-sm: 0.75rem; --fs-md: 0.8125rem;
+  --fs-base: 0.875rem; --fs-lg: 1rem; --fs-xl: 1.125rem; --fs-2xl: 1.375rem;
+  --fs-titel: clamp(1.5rem, 3vw, 2rem);
+}
+
 /* Wer Bewegung reduziert haben möchte, bekommt keine Animationen. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
