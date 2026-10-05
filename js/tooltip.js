@@ -51,7 +51,13 @@
 
   function ziel(e) { return e.target && e.target.closest ? e.target.closest(SEL) : null; }
 
-  document.addEventListener('mouseover', function (e) {
+  // Nur echte Maus. Safari auf dem iPhone erzeugt beim Antippen ein mouseover;
+  // erscheint dabei der Tooltip, wertet iOS das erste Tippen als „Hover" und
+  // löst den Klick NICHT aus — Knöpfe mit Tooltip (Chor 🎤, Loop speichern,
+  // Stecknadel …) reagierten erst beim zweiten Tippen bzw. gar nicht
+  // (Betreiber 2026-10-05). Touch zeigt den Tooltip weiter per Halten.
+  document.addEventListener(global.PointerEvent ? 'pointerover' : 'mouseover', function (e) {
+    if (e.pointerType && e.pointerType !== 'mouse') return;
     var t = ziel(e);
     if (t) zeigen(t); else if (aktuell) weg();
   });
