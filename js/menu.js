@@ -396,6 +396,7 @@
       if (st) { var gleich = st.anker === anker; api.close(); if (gleich) return; }
       if (zuletzt.anker === anker && Date.now() - zuletzt.zeit < 500) { zuletzt.anker = null; return; }
       opts = opts || {};
+      if (global.mxhDatum && global.mxhDatum.offen()) global.mxhDatum.schliessen();   // nie Kalender + Liste zugleich
       st = {
         anker: anker, opts: opts, build: typeof items === 'function' ? items : function () { return items; },
         host: opts.host || document.body, sheet: istSheet(), stapel: [], el: null

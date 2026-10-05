@@ -1,0 +1,107 @@
+/* ════════════════════════════════════════════════════════════════
+ * meryverse_core — Datum und Uhrzeit (UI-Kit Phase 6, seit 0.21.0).
+ * Gehört zu datepicker.js. Optik aus dem Wochenplaner-Kalender (.dp),
+ * Ziele 40 px, Wahl hellgrün mit dunkler Schrift (F1), nur Token-Farben.
+ * ════════════════════════════════════════════════════════════════ */
+
+/* Das Feld bleibt das Feld (.mxh-input o. ä.) — nur Symbol rechts und Ziffern. */
+input.mxh-dp-feld {
+  padding-right: 34px;
+  font-variant-numeric: tabular-nums;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C6DABF' stroke-opacity='.75' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5' width='16' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M4 11h16'/%3E%3C/svg%3E");
+  cursor: pointer;
+}
+input.mxh-dp-feld[data-mxh-zeit] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C6DABF' stroke-opacity='.75' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 3'/%3E%3C/svg%3E");
+}
+input.mxh-dp-feld[aria-expanded="true"] { border-color: var(--accent2); }
+input.mxh-dp-feld:disabled, input.mxh-dp-feld[readonly] { cursor: default; }
+
+.mxh-dp {
+  position: fixed; z-index: var(--z-menu, 3400);
+  box-sizing: border-box; width: 312px; max-width: calc(100vw - 16px);
+  padding: 10px; border-radius: var(--radius, 10px);
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  box-shadow: var(--shadow-pop, 0 18px 50px rgba(0, 0, 0, 0.45));
+  font: 400 0.85rem/1.3 var(--font, 'IBM Plex Sans', sans-serif);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.mxh-dp button {
+  font: inherit; color: inherit; cursor: pointer;
+  border: 0; background: transparent; border-radius: 8px;
+}
+.mxh-dp button:focus-visible { outline: 2px solid var(--accent2, #88D498); outline-offset: -2px; }
+.mxh-dp button:disabled { opacity: 0.35; cursor: default; }
+
+.mxh-dp-kopf { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+.mxh-dp-titel {
+  flex: 1; min-width: 0; min-height: 40px; padding: 0 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; text-align: center;
+}
+.mxh-dp button.mxh-dp-titel:hover, .mxh-dp-nav:hover, .mxh-dp-zelle:hover, .mxh-dp-tag:hover {
+  background: var(--surface3, #1f6b85);
+}
+.mxh-dp-nav {
+  flex: none; width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text2, #C6DABF);
+}
+
+.mxh-dp-wtage, .mxh-dp-tage { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.mxh-dp-wtage span {
+  text-align: center; padding: 2px 0 4px;
+  font: 500 0.7rem/1 var(--mono, 'IBM Plex Mono', monospace); color: var(--text3, rgba(198, 218, 191, 0.65));
+}
+.mxh-dp-tag {
+  height: 40px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 0.82rem;
+  color: var(--text2, #C6DABF); font-variant-numeric: tabular-nums;
+}
+/* Wochenende und NRW-Feiertage warm (wie bisher im Wochenplaner/Spiele-Kalender) */
+.mxh-dp-tag.is-frei { color: var(--warn, #fbbf24); }
+.mxh-dp-tag.is-fremd { opacity: 0.45; }
+.mxh-dp-tag[aria-current="date"] { box-shadow: inset 0 0 0 1px var(--border2, rgba(136, 212, 152, 0.28)); font-weight: 600; }
+.mxh-dp-tag[aria-pressed="true"], .mxh-dp-zelle[aria-pressed="true"] {
+  background: var(--accent2, #88D498); color: var(--bg, #0c3242); font-weight: 600; opacity: 1;
+}
+
+.mxh-dp-monate { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.mxh-dp-zeiten { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
+.mxh-dp-zelle {
+  height: 40px; padding: 0;
+  font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 0.82rem;
+  color: var(--text2, #C6DABF); font-variant-numeric: tabular-nums;
+}
+.mxh-dp-monate .mxh-dp-zelle { font-family: inherit; height: 44px; }
+.mxh-dp-abschnitt {
+  margin: 8px 2px 4px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text3, rgba(198, 218, 191, 0.65));
+}
+.mxh-dp-kopf + .mxh-dp-abschnitt { margin-top: 0; }
+
+.mxh-dp-fuss {
+  display: flex; gap: 6px; margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--border, rgba(136, 212, 152, 0.15));
+}
+.mxh-dp .mxh-dp-fussknopf { flex: 1; }
+
+/* Handy: Blatt von unten (wie das Menü) */
+.mxh-dp-backdrop {
+  position: fixed; inset: 0; z-index: var(--z-menu, 3400);
+  background: var(--overlay, rgba(6, 24, 33, 0.72));
+}
+.mxh-dp.mxh-dp--sheet {
+  left: 0 !important; right: 0; bottom: 0; top: auto !important;
+  width: 100%; max-width: none; max-height: 85vh; overflow-y: auto; overscroll-behavior: contain;
+  border-radius: 14px 14px 0 0;
+  padding: 10px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  font-size: 0.95rem;
+}
+.mxh-dp--sheet .mxh-dp-tag, .mxh-dp--sheet .mxh-dp-zelle { height: 44px; font-size: 0.95rem; }
+.mxh-dp--sheet .mxh-dp-nav { width: 44px; height: 44px; }

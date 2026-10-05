@@ -48,6 +48,7 @@ meryverse_core/
 │   ├── status.css              # app dialogs .mxh-overlay/.mxh-dialog/.mxh-x, empty/loading/progress/flash
 │   ├── tooltip.{css,js}        # [data-tip-t]/[data-tip] mouseover, keyboard, touch long-press
 │   ├── menu.{css,js}           # mxhMenu: menus/submenus/search, keyboard, ARIA, bottom sheet
+│   ├── datepicker.{css,js}     # mxhDatum: date/time fields + calendar (F9), fmt helpers
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -140,6 +141,20 @@ only via ARIA: `.mxh-tabs[role=tablist] > .mxh-tab[role=tab][aria-selected]` (mo
 underline), `.mxh-seg > .mxh-seg-btn[aria-pressed|aria-selected]` (light green when active, like
 the primary button), `details.mxh-akkordeon > summary` (one caret). `fokus.js` gives every
 `[role=tablist]` arrow/Home/End navigation with roving tabindex and syncs `aria-selected` on click.
+
+Since 0.21.0 `js/datepicker.{css,js}` (UI-kit phase 6, F9: no native date/time picker in the
+portal) upgrades every `input[type=date|time|datetime-local]` and `input[data-mxh-datum|zeit|datumzeit]`
+(MutationObserver; opt out with `data-mxh-nativ`). The input stays the field: it becomes a text field
+showing `TT.MM.JJJJ` / `HH:MM` / `TT.MM.JJJJ HH:MM` that accepts typing (`5.10.` → 05.10.2026,
+`930` → 09:30), while `.value` keeps reading and writing ISO — existing JS, ids, classes, labels and
+`change` events keep working; a named field posts ISO through a hidden mirror input. A click opens the
+Meryverse calendar: Monday start, NRW public holidays, 40 px targets, month/year view, hour/minute grid
+(`step` in seconds, default 5 min), min/max, full keyboard (arrows, PgUp/PgDn, Shift for years,
+Home/End, Esc), bottom sheet on narrow touch screens without the on-screen keyboard (`inputmode=none`).
+Unreadable input: `.value` is `''`, the field gets `aria-invalid` and a validity message;
+`mxhDatum.gueltig(input)` tells empty from wrong. Helpers `mxhDatum.fmt(iso)` (TT.MM.JJJJ),
+`fmtZeit`, `fmtDatumZeit` (timestamps with a zone shown in local time), `lesen`, `iso`, `feiertage(jahr)`;
+`mxhDatum.feld(container, {art, label, aufWahl})` creates a field for apps that built their own.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`
