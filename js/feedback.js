@@ -180,7 +180,7 @@
         el("h3", { text: opts.title || "Feedback" }),
         el("button", {
           class: STYLE_NS + "-x", type: "button", "aria-label": "Schließen",
-          text: "✕", onClick: closeModal,
+          html: X_ICON, onClick: closeModal,
         }),
       ]),
       ta,
@@ -225,6 +225,18 @@
     return { kontext_typ: typ, anker: anker };
   }
 
+  // Sprechblase als Linien-Icon (Tabler „message", wie mxhIcon('kommentar'))
+  // statt 💬 — Emoji sind im Portal keine Knopf-Symbole mehr (UI-Kit Phase 7,
+  // F3; Betreiber 2026-10-05: Hilfe und Fußzeile zeigten noch 💬). Inline,
+  // weil feedback.js auch auf Seiten ohne icons.js läuft.
+  var KOMMENTAR_ICON = '<svg class="mxh-ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12"/></svg>';
+
+  var X_ICON = '<svg class="mxh-ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>';
+
   function mountPageButton() {
     if (document.getElementById(STYLE_NS + "-page-btn")) return;
     var btn = el("button", {
@@ -233,7 +245,7 @@
       type: "button",
       title: "Feedback zu dieser Seite",
       "aria-label": "Feedback zu dieser Seite",
-      html: "<span>💬</span><span class='" + STYLE_NS + "-fab-label'>Feedback</span>",
+      html: "<span>" + KOMMENTAR_ICON + "</span><span class='" + STYLE_NS + "-fab-label'>Feedback</span>",
     });
     btn.addEventListener("click", function () {
       openTextModal({
@@ -464,9 +476,11 @@
   function openDetailPopup(mark, item) {
     closeCreatePopup();
     var rect = mark.getBoundingClientRect();
-    var statusTxt = item.status === "erledigt" ? "✅ Erledigt" : "🟡 Offen";
+    // Status als Text + Klasse (Farbe in feedback.css) statt ✅/🟡 (UI-Kit F3)
+    var erledigt = item.status === "erledigt";
     var children = [
-      el("div", { class: STYLE_NS + "-pop-status", text: statusTxt }),
+      el("div", { class: STYLE_NS + "-pop-status " + STYLE_NS + "-pop-status--" + (erledigt ? "erledigt" : "offen"),
+                  text: erledigt ? "Erledigt" : "Offen" }),
       el("div", { class: STYLE_NS + "-pop-komm", text: item.kommentar }),
     ];
     if (item.erledigt_notiz) {
