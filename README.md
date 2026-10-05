@@ -49,6 +49,7 @@ meryverse_core/
 │   ├── tooltip.{css,js}        # [data-tip-t]/[data-tip] mouseover, keyboard, touch long-press
 │   ├── menu.{css,js}           # mxhMenu: menus/submenus/search, keyboard, ARIA, bottom sheet
 │   ├── datepicker.{css,js}     # mxhDatum: date/time fields + calendar (F9), fmt helpers
+│   ├── icons.js                # mxhIcon(name): Tabler line icons (F3), register(), [data-mxh-icon]
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -155,6 +156,15 @@ Unreadable input: `.value` is `''`, the field gets `aria-invalid` and a validity
 `mxhDatum.gueltig(input)` tells empty from wrong. Helpers `mxhDatum.fmt(iso)` (TT.MM.JJJJ),
 `fmtZeit`, `fmtDatumZeit` (timestamps with a zone shown in local time), `lesen`, `iso`, `feiertage(jahr)`;
 `mxhDatum.feld(container, {art, label, aufWahl})` creates a field for apps that built their own.
+
+Since 0.22.0 `js/icons.js` (UI-kit phase 7, F3: no emoji as action icons) holds one generic icon set:
+Tabler line icons (MIT, @tabler/icons 3.49), 24 grid, stroke 1.8, `currentColor`, German names
+(`bearbeiten`, `loeschen`, `x`, `plus`, `verwalten`, `hochladen`, `anhang`, `kommentar`, … — list in the
+file header). `mxhIcon(name, cls)` returns the `<svg class="mxh-ico">` (decorative, `aria-hidden`; the
+button still needs text or `aria-label`), `mxhIcons.register({name: '<path …/>'})` adds app icons (the
+chor registers `piano`, `noten`, `midi` …), and `<span data-mxh-icon="name"></span>` is filled
+automatically (MutationObserver) — handy in Jinja templates. Size in `controls.css`: `.mxh-ico` 1.15em in
+text, 18 px inside `.mxh-btn`/`.mxh-chip`/`.mxh-linkbtn`.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`

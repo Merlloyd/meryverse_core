@@ -30,7 +30,7 @@ def test_nur_mxh_klassen():
     # einer .mxh-Klasse (oder ist :root).
     for sels, _ in _regeln():
         for s in sels:
-            assert s == ":root" or ".mxh-" in s, s
+            assert s == ":root" or ".mxh-" in s or s.startswith("[data-mxh-"), s
 
 
 def test_primaer_ist_hell_mit_dunkler_schrift():
