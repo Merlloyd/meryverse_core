@@ -79,6 +79,13 @@
 .mxh-btn--icon.mxh-btn--sm { width: var(--ctl-h-sm); }
 .mxh-btn--block { display: flex; width: 100%; }
 
+/* Icons (icons.js, seit 0.22.0): Tabler-Linien, Farbe = Textfarbe. Im Fließtext
+   1.15em, im Knopf 18 px — auch im Symbolknopf (.mxh-btn--icon, 36 px Ziel). */
+.mxh-ico { width: 1.15em; height: 1.15em; flex: none; display: inline-block; vertical-align: -0.2em; }
+.mxh-btn .mxh-ico, .mxh-chip .mxh-ico, .mxh-linkbtn .mxh-ico { width: 18px; height: 18px; vertical-align: middle; }
+[data-mxh-icon] { display: inline-flex; align-items: center; justify-content: center; }
+[data-mxh-icon][hidden] { display: none; }
+
 /* Text-Link als Knopf (ein Muster statt acht Klassen) */
 .mxh-linkbtn {
   display: inline; padding: 0; margin: 0; background: none; border: none; cursor: pointer;
