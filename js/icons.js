@@ -12,6 +12,8 @@
  *                                             eingefügte Elemente, MutationObserver)
  *
  * Icons sind Schmuck (aria-hidden): der Knopf braucht trotzdem Text oder aria-label.
+ * width/height="1em" am <svg> sind die Rückfallgröße für Seiten ohne controls.css
+ * (Mitsing-Offline-Paket, seit 0.22.1); .mxh-ico im CSS überstimmt sie.
  *
  * Satz (Name=Tabler): bearbeiten=pencil, loeschen=trash, x=x, plus=plus, minus=minus, check=check, ok=circle-check, verwalten=settings, info=info-circle, warnung=alert-triangle, hochladen=upload, download=download, link=link, extern=external-link, auge=eye, auge-zu=eye-off, kalender=calendar, uhr=clock, sanduhr=hourglass, suche=search, filter=filter, hilfe=help-circle, zurueck=arrow-left, weiter=arrow-right, hoch=arrow-up, runter=arrow-down, aufklappen=chevron-down, rechts=chevron-right, kopieren=copy, anhang=paperclip, kommentar=message, notiz=notes, datei=file, dokument=file-text, ordner=folder, bild=photo, mail=mail, senden=send, posteingang=inbox, telegram=brand-telegram, schloss=lock, schloss-offen=lock-open, schluessel=key, home=home, statistik=chart-bar, bericht=report-analytics, rakete=rocket, speichern=device-floppy, aktualisieren=refresh, rueckgaengig=arrow-back-up, play=player-play, pause=player-pause, stopp=player-stop, merken=bookmark, standard=star, menue=menu-2, mehr=dots, mehr-v=dots-vertical, nutzer=user, nutzer-gruppe=users, drucken=printer, vollbild=maximize, ort=map-pin, mikrofon=microphone, musik=music, glocke=bell, liste=list, raster=layout-grid, verlauf=history, tauschen=switch-horizontal, sortieren=arrows-sort, ziehen=grip-vertical, laden=loader-2, zwischenablage=clipboard, tabelle=table, teilen=share, abmelden=logout, datenbank=database, welt=world, etikett=tag
  * ════════════════════════════════════════════════════════════════ */
@@ -104,7 +106,7 @@
   function mxhIcon(name, klasse) {
     var b = P[name];
     if (!b) return '';
-    return '<svg class="mxh-ico' + (klasse ? ' ' + klasse : '') + '" viewBox="0 0 24 24" fill="none" ' +
+    return '<svg class="mxh-ico' + (klasse ? ' ' + klasse : '') + '" viewBox="0 0 24 24" width="1em" height="1em" fill="none" ' +
       'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ' +
       'aria-hidden="true" focusable="false">' + b + '</svg>';
   }
