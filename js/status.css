@@ -39,7 +39,7 @@
   width: var(--ctl-h, 36px); height: var(--ctl-h, 36px); padding: 0;
   display: inline-flex; align-items: center; justify-content: center;
   background: transparent; border: 1px solid transparent; border-radius: var(--radius, 10px);
-  color: var(--text2, #C6DABF); font: 400 1.35rem/1 var(--font, sans-serif); cursor: pointer;
+  color: var(--text2, #C6DABF); font: 400 var(--fs-2xl, 1.375rem)/1 var(--font, sans-serif); cursor: pointer;
 }
 .mxh-x:hover { background: var(--surface2, #1a5d74); border-color: var(--border2, rgba(136, 212, 152, 0.28)); color: var(--text, #F3E9D2); }
 .mxh-dialog > .mxh-x:first-child { position: absolute; top: 8px; right: 8px; }
@@ -47,7 +47,7 @@
 /* ── Leer ───────────────────────────────────────────────────────── */
 .mxh-empty {
   padding: 24px 16px; text-align: center;
-  color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.9rem; line-height: 1.5;
+  color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: var(--fs-base, 0.875rem); line-height: 1.5;
 }
 .mxh-empty--karte {
   border: 1px dashed var(--border2, rgba(136, 212, 152, 0.28)); border-radius: var(--radius, 10px);
@@ -63,7 +63,7 @@
 }
 .mxh-loading {
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 24px 16px; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.9rem;
+  padding: 24px 16px; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: var(--fs-base, 0.875rem);
 }
 @keyframes mxh-dreh { to { transform: rotate(360deg); } }
 
@@ -82,7 +82,7 @@
   padding: 10px 14px; margin-bottom: 16px; border-radius: var(--radius, 10px);
   border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
   background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
-  font-size: 0.9rem; line-height: 1.45;
+  font-size: var(--fs-base, 0.875rem); line-height: 1.45;
 }
 .mxh-flash--ok {
   border-color: var(--accent2, #88D498); color: var(--accent2, #88D498);

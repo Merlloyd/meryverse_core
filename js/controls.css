@@ -45,7 +45,7 @@
   box-sizing: border-box;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: var(--ctl-h); padding: 0 14px;
-  font-family: var(--font); font-size: 0.9rem; font-weight: 500; line-height: 1.2;
+  font-family: var(--font); font-size: var(--fs-base); font-weight: 500; line-height: 1.2;
   color: var(--text); text-decoration: none; white-space: nowrap;
   background: var(--surface2);
   border: 1px solid var(--border2); border-radius: var(--radius);
@@ -102,7 +102,7 @@
   box-sizing: border-box;
   display: inline-flex; align-items: center; gap: 6px;
   min-height: 32px; padding: 0 12px;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: 0.04em;
   color: var(--text2); text-decoration: none; white-space: nowrap;
   max-width: 100%; overflow: hidden; text-overflow: ellipsis;   /* lange Namen sprengen sonst die Zeile */
   background: transparent; border: 1px solid var(--border); border-radius: var(--radius-pill);
@@ -120,7 +120,7 @@
    Projektname lesbar) statt abgeschnitten zu werden. */
 .mxh-chip--gross {
   min-height: var(--ctl-h-sm); padding: 6px 14px;
-  font-family: var(--font); font-size: 0.9rem; letter-spacing: 0; line-height: 1.25;
+  font-family: var(--font); font-size: var(--fs-base); letter-spacing: 0; line-height: 1.25;
   white-space: normal; text-align: center; justify-content: center;
 }
 
@@ -128,7 +128,7 @@
 .mxh-input {
   box-sizing: border-box;
   width: 100%; min-height: var(--ctl-h); padding: 6px 12px;
-  font-family: var(--font); font-size: 0.9rem; line-height: 1.4;
+  font-family: var(--font); font-size: var(--fs-base); line-height: 1.4;
   color: var(--text); background: var(--bg);
   border: 1px solid var(--border2); border-radius: var(--radius);
   transition: border-color 0.15s, background-color 0.15s;
@@ -152,20 +152,20 @@ select.mxh-input {
 }
 /* iOS zoomt bei Feldschrift unter 16 px ins Feld — auf Touch-Geräten 16 px. */
 @media (pointer: coarse) {
-  .mxh-input, .mxh-input--sm { font-size: 16px; }
+  .mxh-input, .mxh-input--sm { font-size: 16px; }   /* fest, nicht --fs-lg: iOS zoomt unter 16 px Rechenwert */
 }
 
 /* Feld-Gerüst: Label, Pflicht-Stern, Hinweis, Fehler */
 .mxh-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
 .mxh-label {
   display: block;
-  font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+  font-family: var(--mono); font-size: var(--fs-sm); font-weight: 500;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3);
 }
 .mxh-req { color: var(--accent2); margin-left: 2px; }
-.mxh-hint { font-size: 0.8rem; line-height: 1.45; color: var(--text3); }
+.mxh-hint { font-size: var(--fs-md); line-height: 1.45; color: var(--text3); }
 .mxh-input[aria-invalid="true"], .mxh-field--error .mxh-input { border-color: var(--neg); }
-.mxh-error, .mxh-field--error .mxh-hint { font-size: 0.8rem; line-height: 1.45; color: var(--neg); }
+.mxh-error, .mxh-field--error .mxh-hint { font-size: var(--fs-md); line-height: 1.45; color: var(--neg); }
 
 /* Schalter: echtes Checkbox-Input (Formularsemantik + Tastatur gratis)
    <label class="mxh-switch"><input type="checkbox"><span>Text</span></label> */
@@ -216,7 +216,7 @@ select.mxh-input {
 .mxh-tab {
   flex: none; box-sizing: border-box; min-height: var(--ctl-h); padding: 0 14px;
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: var(--mono); font-size: var(--fs-sm); letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--text3); background: transparent; cursor: pointer;
   border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; border-radius: 0;
   transition: color 0.15s, border-color 0.15s;
@@ -232,7 +232,7 @@ select.mxh-input {
 .mxh-seg-btn {
   box-sizing: border-box; min-height: calc(var(--ctl-h) - 8px); padding: 0 12px;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  font-family: var(--font); font-size: 0.85rem; color: var(--text2);
+  font-family: var(--font); font-size: var(--fs-base); color: var(--text2);
   background: transparent; border: 0; border-radius: calc(var(--radius) - 3px); cursor: pointer;
   transition: background-color 0.15s, color 0.15s;
 }
