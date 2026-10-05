@@ -37,3 +37,13 @@ def test_icon_css():
     # Farbe kommt aus dem Text: keine Füll-/Strichfarbe in der Icon-Regel
     regel = css[css.index(".mxh-ico {"):].split("}")[0]
     assert "color" not in regel and "stroke" not in regel and "fill" not in regel
+
+
+def test_feedback_js_ohne_emoji():
+    # Betreiber 2026-10-05: Feedback-Knopf in Hilfe und Fußzeile zeigte noch 💬,
+    # dazu ✕ im Dialog und ✅/🟡 im Status. Kommentare dürfen Emoji nennen.
+    import re as _re
+    quelle = _lies("feedback.js")
+    ohne_kommentare = _re.sub(r"//[^\n]*|/\*.*?\*/", "", quelle, flags=_re.S)
+    treffer = _re.findall(r"[\U0001F300-\U0001FAFF☀-➿✕✖]", ohne_kommentare)
+    assert not treffer, treffer
