@@ -86,3 +86,23 @@ def test_hidden_attribut_gewinnt():
     m = re.search(r"([^{}]*)\{\s*display:\s*none;\s*\}", OHNE_KOMMENTARE)
     for k in (".mxh-btn[hidden]", ".mxh-chip[hidden]", ".mxh-input[hidden]"):
         assert k in m.group(1), k
+
+
+def test_tabs_segmente_akkordeon():
+    # UI-Kit Phase 5 (0.20.0): Aktiv-Zustand nur über ARIA, keine .active-Klassen.
+    for teil in (".mxh-tabs {", ".mxh-tab {", '.mxh-tab[aria-selected="true"]', ".mxh-seg {",
+                 '.mxh-seg-btn[aria-pressed="true"]', ".mxh-akkordeon > summary"):
+        assert teil in CSS, teil
+    assert ".mxh-tab.active" not in CSS and ".mxh-seg-btn.active" not in CSS
+    fokus = (ROOT / "js" / "fokus.js").read_text(encoding="utf-8")
+    assert "[role=tablist]" in fokus and "e.key === 'Home'" in fokus
+
+
+def test_navigation_leise_umschalter_gefuellt():
+    # Betreiber 2026-10-04: aria-current="page" (Navigation) bekommt keine
+    # gefüllte Fläche — die gehört Hauptaktion und echten Umschaltern.
+    nav = re.search(r'\.mxh-seg-btn\[aria-current="page"\] \{([^}]*)\}', OHNE_KOMMENTARE)
+    assert nav and "background: transparent" in nav.group(1)
+    gefuellt = re.search(r'\.mxh-seg-btn\[aria-pressed="true"\][^{]*\{([^}]*)\}', OHNE_KOMMENTARE)
+    assert gefuellt and "background: var(--accent2)" in gefuellt.group(1)
+    assert 'aria-current="page"' not in OHNE_KOMMENTARE[gefuellt.start():gefuellt.end()]

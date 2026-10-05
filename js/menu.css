@@ -1,0 +1,91 @@
+/* ════════════════════════════════════════════════════════════════
+ * meryverse_core — Menü (UI-Kit Phase 5, seit 0.18.0). Gehört zu menu.js.
+ *
+ * Aus dem Chor-Meryverse-Menü (mitsing.css .ms-menu) herausgelöst: gleiche
+ * Optik, dazu Höhen-Clamp, Bottom-Sheet am Handy und Kit-Höhe der Einträge.
+ * Nur .mxh-Klassen, nur Token-Farben (mit dunklen Fallbacks — das Menü läuft
+ * auch im Mitsing-Offline-Paket, dort kommen die Tokens aus dem Paket).
+ * ════════════════════════════════════════════════════════════════ */
+.mxh-menu {
+  position: fixed; z-index: var(--z-menu, 3400);
+  box-sizing: border-box; display: flex; flex-direction: column;
+  min-width: 180px; max-width: min(420px, calc(100vw - 16px));
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 4px; border-radius: 8px;
+  background: var(--surface2, #1a5d74); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font: 400 0.85rem/1.35 var(--font, 'IBM Plex Sans', sans-serif);
+}
+.mxh-menu-sub { min-width: 160px; }   /* eigene feste Ebene am Host, s. menu.js */
+
+.mxh-menu-item {
+  box-sizing: border-box; display: flex; align-items: center; gap: 8px; width: 100%;
+  flex: none;   /* in scrollender Liste nicht auf Mindesthöhe stauchen (Überlappung) */
+  min-height: var(--ctl-h, 36px); padding: 6px 10px;
+  border: 0; border-radius: 6px; background: transparent;
+  color: var(--text, #F3E9D2); font: inherit; text-align: left; cursor: pointer;
+}
+.mxh-menu-item:hover, .mxh-menu-item.is-open, .mxh-menu-item.is-akt, .mxh-menu-item:focus-visible {
+  background: var(--surface, #114B5F);
+}
+/* Fokusring selbst setzen: das Mitsing-Offline-Paket hat die Basis-Regeln
+   aus tokens.css nicht (sonst Browser-Standardring). */
+.mxh-menu-item:focus-visible, .mxh-menu-pin:focus-visible { outline: 2px solid var(--accent2, #88D498); outline-offset: -2px; }
+/* Mit der Tastatur markierter Eintrag (Suche: Fokus bleibt im Suchfeld). */
+.mxh-menu-item.is-akt { outline: 1px solid var(--accent2, #88D498); outline-offset: -1px; }
+.mxh-menu-item:disabled { opacity: 0.4; cursor: default; }
+.mxh-menu-item:disabled:hover { background: transparent; }
+.mxh-menu-item[hidden], .mxh-menu-sep[hidden] { display: none; }
+.mxh-menu-check { flex: none; width: 1em; color: var(--accent2, #88D498); }
+.mxh-menu-icon { flex: none; display: inline-flex; width: 16px; height: 16px; color: var(--accent2, #88D498); }
+.mxh-menu-icon svg { width: 16px; height: 16px; }
+.mxh-menu-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+.mxh-menu-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.mxh-menu-hint { flex: none; color: var(--text3, rgba(198, 218, 191, 0.65)); font-size: 0.78rem; }
+.mxh-menu-arrow { flex: none; color: var(--text3, rgba(198, 218, 191, 0.65)); }
+.mxh-menu-sep { flex: none; height: 1px; margin: 4px 6px; background: var(--border, rgba(136, 212, 152, 0.15)); }
+.mxh-menu-leer { padding: 8px 10px; color: var(--text3, rgba(198, 218, 191, 0.65)); font-style: italic; }
+
+/* Kopfzeile (Titel + Ablösen/Zurück) und Suche */
+.mxh-menu-head {
+  flex: none; display: flex; align-items: center; gap: 8px;
+  padding: 4px 6px 6px 10px; margin-bottom: 4px;
+  font-size: 0.78rem; font-weight: 600; color: var(--text3, rgba(198, 218, 191, 0.75));
+  border-bottom: 1px solid var(--border, rgba(136, 212, 152, 0.15));
+}
+.mxh-menu-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mxh-menu-pin {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; min-height: 28px; padding: 2px 4px; border: 0; border-radius: 4px;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.mxh-menu-pin:hover { background: var(--surface, #114B5F); color: var(--text, #F3E9D2); }
+.mxh-menu-search {
+  flex: none; box-sizing: border-box; width: auto; margin: 2px 2px 6px; min-height: var(--ctl-h, 36px);
+  padding: 6px 10px; border-radius: 6px; font: inherit;
+  background: var(--surface, #114B5F); color: var(--text, #F3E9D2);
+  border: 1px solid var(--border2, rgba(136, 212, 152, 0.28));
+}
+.mxh-menu-search:focus { border-color: var(--accent2, #88D498); }
+
+/* Flache Form (abgelöstes Fenster): Untermenüs eingerückt unter Überschrift */
+.mxh-menu-flat { display: flex; flex-direction: column; }
+.mxh-menu-flat.mxh-menu-indent { padding-left: 14px; }
+.mxh-menu-group {
+  padding: 6px 10px 2px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.03em;
+  color: var(--text3, rgba(198, 218, 191, 0.65)); text-transform: uppercase;
+}
+
+/* Am Handy (schmal + Finger): Blatt von unten, Untermenüs ersetzen den Inhalt */
+.mxh-menu-backdrop {
+  position: fixed; inset: 0; z-index: var(--z-menu, 3400);
+  background: var(--overlay, rgba(6, 24, 33, 0.72));
+}
+.mxh-menu.mxh-menu--sheet {
+  left: 0 !important; right: 0; bottom: 0; top: auto !important;
+  width: 100%; max-width: none; max-height: 70vh;
+  border-radius: 14px 14px 0 0; padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  font-size: 0.95rem;
+}
+.mxh-menu--sheet .mxh-menu-item { min-height: 44px; }

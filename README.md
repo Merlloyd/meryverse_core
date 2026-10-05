@@ -47,6 +47,7 @@ meryverse_core/
 │   ├── toast.{css,js}          # mxhToast(text, {kind, ms}) (portal: /static/core/)
 │   ├── status.css              # app dialogs .mxh-overlay/.mxh-dialog/.mxh-x, empty/loading/progress/flash
 │   ├── tooltip.{css,js}        # [data-tip-t]/[data-tip] mouseover, keyboard, touch long-press
+│   ├── menu.{css,js}           # mxhMenu: menus/submenus/search, keyboard, ARIA, bottom sheet
 │   ├── design_system.css
 │   ├── lock_screen.{css,js}
 │   ├── crypto.js
@@ -116,6 +117,29 @@ Since 0.17.0 `js/fokus.js` also traps focus in **app-owned dialogs**: every visi
 focus to the dialog itself on open (not into the first field — no surprise keyboard on phones) and
 returns focus to the trigger on close. Stacked dialogs: the higher layer wins; an open `mxhModal`
 takes precedence. Esc stays with the app.
+
+Since 0.18.0 `js/menu.{css,js}` (UI-kit phase 5) is the former chor "Meryverse menu" as a core
+component: `mxhMenu.open(anchor, items, opts)` with items `{label, onSelect, checked, radio,
+disabled, keepOpen, icon, hint, color, children}` or `{sep: true}`; opts `host`, `placement`
+(`below`/`above`), `search` (true or a minimum item count), `title` + `onDetach`, `matchWidth`,
+`role` (`menu`/`listbox`). Full keyboard (arrows, Home/End, Enter/Space, → / ← for submenus, Esc,
+Tab, type-ahead), ARIA roles and `aria-expanded` on the anchor, focus back to the anchor, height
+clamped to the viewport, closes on scroll/resize, bottom sheet with drill-down submenus on narrow
+touch screens. `mxhMenu.build(items, {after})` renders the flat form for detached windows. New
+layer token `--z-menu 3400`.
+
+Since 0.19.0 the same file upgrades **selects** (F8, no native drop-down list in the portal):
+every `select.mxh-input` / `select.mxh-modal-input` / `select[data-mxh-auswahl]` opens the
+Meryverse list (role listbox, search from 8 entries, `<optgroup>` as headings) instead of the
+browser list — mouse, touch, Enter/Space/Alt+↓/F4. The select itself stays the visible field
+(classes, sizes, value, `change` event untouched); new selects are picked up by a
+MutationObserver. Opt out with `data-mxh-nativ`. Item type `{group: 'Heading'}` added.
+
+Since 0.20.0 `controls.css` also has **tabs, segmented controls and accordions** — active state
+only via ARIA: `.mxh-tabs[role=tablist] > .mxh-tab[role=tab][aria-selected]` (mono caps, accent2
+underline), `.mxh-seg > .mxh-seg-btn[aria-pressed|aria-selected]` (light green when active, like
+the primary button), `details.mxh-akkordeon > summary` (one caret). `fokus.js` gives every
+`[role=tablist]` arrow/Home/End navigation with roving tabindex and syncs `aria-selected` on click.
 
 `js/tokens.css` is **generated** from `design.py` — regenerate with
 `python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py`

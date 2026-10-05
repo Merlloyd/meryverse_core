@@ -20,12 +20,12 @@ def test_ebenen_reihenfolge():
     # über einem Dialog), Toast und Tooltip ganz oben.
     css = design.get_tokens_css()
     werte = {k: int(v) for k, v in re.findall(r"--z-([a-z]+):\s*(\d+)", css)}
-    assert werte["fab"] < werte["overlay"] < werte["modal"] < werte["toast"] < werte["tooltip"]
+    assert werte["fab"] < werte["overlay"] < werte["modal"] < werte["menu"] < werte["toast"] < werte["tooltip"]
 
 
 def test_komponenten_nutzen_die_ebenen():
     # Keine festen z-index-Zahlen mehr in den geteilten Komponenten.
-    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css"):
+    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css", "menu.css"):
         for wert in re.findall(r"z-index\s*:\s*([^;]+);", _lies(name)):
             assert wert.strip().startswith("var(--z-"), (name, wert)
 
@@ -91,3 +91,42 @@ def test_fokusfalle_fuer_app_dialoge():
     assert "getElementById('mxh-modal-root')" in js           # Vorrang mxhModal
     assert "ausloeser" in js                                  # Fokus zurück
     assert ".focus()" not in js.split("function fokusRein")[1].split("}")[0].replace("d.focus(", "")  # nie ins erste Feld
+
+
+# ── Menü (UI-Kit Phase 5, seit 0.18.0) ──
+
+def test_menu_api_und_tastatur():
+    js = _lies("menu.js")
+    assert "global.mxhMenu = api" in js
+    for teil in ("case 'ArrowDown'", "case 'ArrowUp'", "case 'Home'", "case 'End'", "case 'ArrowRight'",
+                 "case 'ArrowLeft'", "case 'Escape'", "case 'Tab'", "aria-expanded", "aria-haspopup",
+                 "menuitemradio", "menuitemcheckbox", "aria-checked", "'listbox'"):
+        assert teil in js, teil
+
+
+def test_menu_escaped_texte():
+    js = _lies("menu.js")
+    assert "esc(it.label)" in js and "esc(it.hint)" in js and "esc(st.opts.title)" in js
+
+
+def test_menu_css():
+    css = _lies("menu.css")
+    for teil in (".mxh-menu {", "var(--z-menu", ".mxh-menu--sheet", ".mxh-menu-item {", "min-height: var(--ctl-h"):
+        assert teil in css, teil
+    ohne = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    for m in re.finditer(r"([^{}]*)\{[^{}]*\}", ohne):
+        for s in m.group(1).split(","):
+            s = s.strip()
+            if s and not s.startswith("@"):
+                assert s.startswith(".mxh-"), s
+
+
+def test_auswahl_faengt_nur_das_oeffnen_ab():
+    # F8: <select class="mxh-input"> öffnet die Meryverse-Liste; das Select
+    # bleibt das Feld (Klassen, Maße, Wert, change-Event unverändert).
+    js = _lies("menu.js")
+    assert "global.mxhAuswahl" in js
+    assert "'select.mxh-input, select.mxh-modal-input, select[data-mxh-auswahl]'" in js
+    for teil in ("addEventListener('mousedown'", "addEventListener('touchend'", "e.key === 'Enter'",
+                 "new Event('change', { bubbles: true })", "data-mxh-nativ"):
+        assert teil in js, teil

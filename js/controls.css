@@ -37,7 +37,8 @@
 /* `hidden` muss gewinnen: die display-Werte unten würden es sonst aufheben
    (gefunden an #btn-back im Sammlungs-Admin, per JS über hidden geschaltet). */
 .mxh-btn[hidden], .mxh-chip[hidden], .mxh-input[hidden], .mxh-switch[hidden],
-.mxh-check[hidden], .mxh-field[hidden], .mxh-linkbtn[hidden] { display: none; }
+.mxh-check[hidden], .mxh-field[hidden], .mxh-linkbtn[hidden], .mxh-tabs[hidden], .mxh-tab[hidden],
+.mxh-seg[hidden], .mxh-seg-btn[hidden] { display: none; }
 
 /* ── Knöpfe ────────────────────────────────────────────────────────────── */
 .mxh-btn {
@@ -189,3 +190,68 @@ select.mxh-input {
 
 /* Breite Tabellen am Handy: seitlich scrollen statt die Seite zu sprengen */
 .mxh-scroll-x { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+
+/* ── Tabs, Segmente, Akkordeon (UI-Kit Phase 5, seit 0.20.0) ─────────────
+ * Aktiv-Zustand nur über ARIA (aria-selected / aria-pressed / aria-current),
+ * keine .active/.on/.aktiv-Klassen mehr. Tastatur (←/→/Home/End) liefert
+ * fokus.js für jedes [role=tablist].
+ *   <div class="mxh-tabs" role="tablist">
+ *     <button class="mxh-tab" role="tab" aria-selected="true">…</button> …
+ *   <div class="mxh-seg" role="group">   (Umschalter, 2–5 Optionen)
+ *     <button class="mxh-seg-btn" aria-pressed="true">…</button> …
+ *   <details class="mxh-akkordeon"><summary>Titel</summary>…</details>   */
+.mxh-tabs {
+  /* Umbrechen statt seitlich scrollen: ein weggescrollter Reiter ohne
+     sichtbaren Balken wäre am Handy nicht zu finden. */
+  display: flex; flex-wrap: wrap; gap: 0 2px;
+  border-bottom: 1px solid var(--border);
+}
+.mxh-tab {
+  flex: none; box-sizing: border-box; min-height: var(--ctl-h); padding: 0 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text3); background: transparent; cursor: pointer;
+  border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; border-radius: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.mxh-tab:hover { color: var(--text2); }
+.mxh-tab[aria-selected="true"], .mxh-tab[aria-current="page"] { color: var(--accent2); border-bottom-color: var(--accent2); }
+.mxh-tab:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+.mxh-seg {
+  display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.mxh-seg-btn {
+  box-sizing: border-box; min-height: calc(var(--ctl-h) - 8px); padding: 0 12px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--font); font-size: 0.85rem; color: var(--text2);
+  background: transparent; border: 0; border-radius: calc(var(--radius) - 3px); cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.mxh-seg-btn:hover { color: var(--text); background: var(--surface2); }
+.mxh-seg-btn[aria-pressed="true"], .mxh-seg-btn[aria-selected="true"],
+.mxh-seg-btn[aria-current="step"] {
+  color: var(--on-accent); background: var(--accent2); font-weight: 600;
+}
+/* Navigation (aria-current="page") ist keine Aktion: leise wie ein Reiter —
+   hellgrüne Schrift mit Unterstrich statt gefüllter Fläche. Gefüllt-grün
+   bleibt der Hauptaktion und echten Umschaltern vorbehalten (Betreiber
+   2026-10-04, Kopfnavigation Lernkarten/Spiele). */
+.mxh-seg-btn[aria-current="page"] {
+  color: var(--accent2); background: transparent; font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--accent2); border-radius: 0;
+}
+.mxh-seg-btn:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; }
+
+.mxh-akkordeon > summary {
+  display: flex; align-items: center; gap: 8px; min-height: var(--ctl-h);
+  cursor: pointer; list-style: none; color: var(--text);
+}
+.mxh-akkordeon > summary::-webkit-details-marker { display: none; }
+.mxh-akkordeon > summary::before {
+  content: ""; flex: none; width: 6px; height: 6px; margin: 0 4px 0 2px;
+  border-right: 1.5px solid var(--text3); border-bottom: 1.5px solid var(--text3);
+  transform: rotate(-45deg); transition: transform 0.15s;
+}
+.mxh-akkordeon[open] > summary::before { transform: rotate(45deg); }
