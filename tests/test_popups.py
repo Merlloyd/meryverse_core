@@ -25,7 +25,7 @@ def test_ebenen_reihenfolge():
 
 def test_komponenten_nutzen_die_ebenen():
     # Keine festen z-index-Zahlen mehr in den geteilten Komponenten.
-    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css", "menu.css"):
+    for name in ("modal.css", "feedback.css", "toast.css", "status.css", "tooltip.css", "menu.css", "datepicker.css"):
         for wert in re.findall(r"z-index\s*:\s*([^;]+);", _lies(name)):
             assert wert.strip().startswith("var(--z-"), (name, wert)
 
@@ -130,3 +130,46 @@ def test_auswahl_faengt_nur_das_oeffnen_ab():
     for teil in ("addEventListener('mousedown'", "addEventListener('touchend'", "e.key === 'Enter'",
                  "new Event('change', { bubbles: true })", "data-mxh-nativ"):
         assert teil in js, teil
+
+
+# ── Datum und Uhrzeit (UI-Kit Phase 6, seit 0.21.0) ──
+
+def test_datum_wertet_native_felder_auf():
+    # F9: kein natives Datums-/Zeitfeld. Das Feld bleibt das Feld, .value bleibt ISO.
+    js = _lies("datepicker.js")
+    assert "global.mxhDatum" in js
+    for teil in ("input[type=date], input[type=time], input[type=datetime-local]",
+                 "input[data-mxh-datum], input[data-mxh-zeit], input[data-mxh-datumzeit]",
+                 "data-mxh-nativ", "Object.defineProperty(inp, 'value'", "new MutationObserver",
+                 "new Event('change', { bubbles: true })", "h.type = 'hidden'"):
+        assert teil in js, teil
+
+
+def test_datum_tastatur_touch_und_feiertage():
+    js = _lies("datepicker.js")
+    for teil in ("'PageUp'", "'PageDown'", "'Home'", "'End'", "'Escape'", "e.stopPropagation()",
+                 "inputmode', 'none'", "aria-current', 'date'", "aria-pressed", "Fronleichnam",
+                 "Allerheiligen", "(erster.getDay() + 6) % 7"):
+        assert teil in js, teil
+    # iPhone-Regel (Phase 5): keine Reaktion auf Hover im Skript
+    assert "mouseover" not in js and "mouseenter" not in js
+
+
+def test_datum_lesen_und_anzeige():
+    js = _lies("datepicker.js")
+    # 4-stelliges Jahr in der Anzeige, Tippen wie im Timetracker
+    assert "m[3] + '.' + m[2] + '.' + m[1]" in js
+    assert '"930"→09:30' in js
+
+
+def test_datum_css():
+    css = _lies("datepicker.css")
+    for teil in (".mxh-dp {", "var(--z-menu", ".mxh-dp--sheet", "height: 40px", "input.mxh-dp-feld",
+                 '.mxh-dp-tag[aria-pressed="true"]'):
+        assert teil in css, teil
+    for zeile in css.splitlines():
+        s = zeile.strip()
+        if s.endswith("{") and not s.startswith("@"):
+            for sel in s[:-1].split(","):
+                sel = sel.strip()
+                assert sel.startswith(".mxh-") or sel.startswith("input.mxh-dp-feld"), sel
