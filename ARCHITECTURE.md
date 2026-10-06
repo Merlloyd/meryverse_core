@@ -227,7 +227,9 @@ Nicht jede App nutzt den gesamten Stack. Beispiele:
 | App | Genutzte Module | Typischer Aufruf |
 |---|---|---|
 | `mxh-excel-vergleich` | nur `design` | `design.get_css_block(scheme="vodafone")` als Token-Block, App hat eigenes HTML-Template mit Platzhalter |
-| `haushaltsbuch`, `aktien`, `chor`, `fte`, `ketten` | `design` + `html_builder` + `assets` | Voller Builder-Pfad mit geteiltem Lock-Screen, Crypto-JS und Export-Utilities |
+| `fte`, `ketten` | `design` + `html_builder` + `assets` | Voller Builder-Pfad mit geteiltem Lock-Screen, Crypto-JS und Export-Utilities |
+| `meryverse-website` (Chor) | nur `design` | `design.get_css_block(scheme="meryverse")` zur Render-Zeit; alle Portal-Seiten laden sonst das vendorte UI-Kit (`js/tokens.css`, `frame.css`, `controls.css` …) |
+| `haushaltsbuch`, `aktien` | keins (Python) | Seit V2.30.1 laden die erzeugten Seiten das UI-Kit des Portals per Verweis (`/core/tokens.css`, `/static/core/*`); vorher nur `design.get_css_block()` — nie Lock-Screen oder Verschlüsselung |
 
 Migrationsweg ist additiv: Apps können erst nur die Tokens ziehen
 (`design.py`) und später schrittweise auf den Builder umsteigen, wenn
