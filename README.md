@@ -198,3 +198,41 @@ html = (
     .write("output.html")
 )
 ```
+
+## Taggen und Konsumieren
+
+Jede Version in `pyproject.toml` bekommt einen Git-Tag `v<version>` (Tag setzen und pushen nach dem Merge auf `main`):
+
+```bash
+git tag -a v<version> -m "meryverse-core <version>" && git push origin v<version>
+```
+
+Konsumenten arbeiten ausschließlich mit Tags, nicht mit Nachbarordnern:
+
+- **Frontend-Assets (`js/`):** `js/` ist nicht Teil des pip-Pakets. Die Website holt es per **Tag-Checkout** (flacher Klon
+  des Tags) und kopiert die benötigten Dateien in ihre eigene `static/`-Ablage.
+- **Python-Paket:** Die Website pinnt `meryverse-core` in ihrer `requirements.txt` auf **denselben Tag**
+  (`meryverse-core @ git+https://github.com/Merlloyd/meryverse_core.git@v<version>`).
+
+Ein Tag-Bump rollt die Konsumenten nicht automatisch nach: Tag und Pin müssen dort bewusst angehoben werden.
+
+## Icons rendern
+
+`scripts/render_icons.py` rendert ein App-Icon aus seiner SVG-Quelle (Source of Truth) in alle benötigten PNG-Größen und
+ein Multi-Size-Favicon. Die Ausgabe ist deterministisch (`resvg-py`, `Pillow`); Abhängigkeiten:
+`pip install -r requirements-tools.txt`.
+
+```bash
+python3 scripts/render_icons.py SVG [--static-dir DIR --slug SLUG [--layout flat|folder]] [--app-png PATH] [--app-ico PATH]
+```
+
+- `--static-dir DIR --slug SLUG` schreibt den Asset-Satz für eine Web-App:
+  - `--layout flat` (Standard): `DIR/<slug>-icon.svg` (Kopie; entfällt, wenn Quelle und Ziel dieselbe Datei sind),
+    `<slug>-icon.png` (1024), `<slug>-icon-512.png`, `<slug>-icon-192.png`, `<slug>-favicon.ico`
+  - `--layout folder`: `DIR/<slug>/icon.svg`, `icon.png` (1024), `icon-512.png`, `icon-192.png`, `favicon.ico`
+- `--app-png PATH` / `--app-ico PATH` schreiben zusätzlich ein 1024er-PNG bzw. ein ICO an den angegebenen Pfad.
+- Mindestens eines von `--static-dir` (mit `--slug`), `--app-png` oder `--app-ico` ist Pflicht.
+
+Beispiel: `python3 scripts/render_icons.py my-app-icon.svg --static-dir static --slug my-app`
+
+Logo und Farbpaletten liegen in `branding/`.
