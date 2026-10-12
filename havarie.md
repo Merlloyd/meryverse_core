@@ -1,6 +1,5 @@
 # Havarie — meryverse_core: Git → Produktion live
 
-> **Pfade (seit 2026-10-12):** Das Repo liegt unter `~/IdeaProjects/meryverse_core` mit eigener `.venv`. Bis zum Umzug aus dem aufgelösten Workspace gilt noch `~/IdeaProjects/Meryverse/meryverse_core` bzw. `~/IdeaProjects/Meryverse/.venv`.
 
 > Idiotensichere Schritt-für-Schritt-Anleitung, wie eine Änderung an
 > `meryverse_core` bis zum sichtbaren Ergebnis in Produktion kommt.
