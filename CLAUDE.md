@@ -1,8 +1,21 @@
-# CLAUDE.md — meryverse_core
+<!-- Erzeugt aus CairnOS. Nicht von Hand ändern: Änderungen in CairnOS machen, sie kommen per Pull Request hierher. -->
 
-Geteilte Bibliothek der Meryverse-Apps: Design-Tokens, Frontend-Kit (`js/`), Offline-HTML-Builder.
+# Regeln: Meryverse Core
 
-## Dieses Repo ist ÖFFENTLICH
+## Grundsätze (gelten immer)
+
+### Commit nur nach Bestätigung, Push nur auf Wunsch
+
+Nur falls der Workspace ein Git-Repo ist (`git rev-parse --is-inside-work-tree`):
+
+1. `git status` — Was hat sich geändert?
+2. Zeige dem User die geplante Commit-Message und die zu stagenden Dateien.
+3. **Erst nach Bestätigung** committen. Niemals Secrets oder `.env` einbeziehen.
+4. **Push nur, wenn der User es ausdrücklich wünscht.**
+
+Falls kein Git-Repo: Schritt überspringen und in der Zusammenfassung vermerken.
+
+### Öffentliches Repo: nichts Internes einchecken
 
 `meryverse_core` ist auf GitHub öffentlich. Hier darf **nichts Internes** landen:
 
@@ -14,34 +27,22 @@ Geteilte Bibliothek der Meryverse-Apps: Design-Tokens, Frontend-Kit (`js/`), Off
 Vor jedem Commit kurz prüfen, was gestaged ist (`git status`, `git diff --staged`) — ein einmal veröffentlichter Stand
 lässt sich nicht zurückholen.
 
-## Wo was steht
-
-- **Steckbrief:** `context/core.md` (Zweck, Konsumenten, Dateien, Versionierung, Baustellen)
-- **Architektur:** `ARCHITECTURE.md`; **Überblick und Quick start:** `README.md`
-- **Branding:** `branding/` (Logo, Farbpaletten) — Quelle der Wahrheit für die Design-Tokens bleibt `meryverse_core/design.py`
-- **Icons rendern:** `scripts/render_icons.py` (Aufruf im README), Abhängigkeiten in `requirements-tools.txt`
-- **Slash-Commands:** `.claude/commands/` (Vorlage-Commands für Planen und Umsetzen)
-
-## Übergreifende Regeln
+### Doku Deutsch, Code und Kommentare Englisch
 
 Arbeitsweise, Branch-/Test-/Deploy-Konvention und Umgang mit Geheimnissen gelten aus **CairnOS** (globale Regeln) und
 stehen deshalb nicht in diesem Repo. Repo-spezifisch gilt: Doku Deutsch, Code und Kommentare Englisch.
 
-## Version und Tag (Pflicht)
 
-`pyproject.toml` → `version` ist die Quelle der Wahrheit (Semver). **Bei jedem Versions-Bump gehört ein Git-Tag
-`v<version>` dazu**, gesetzt und gepusht nach dem Merge auf `main`:
+## Verzeichnis
 
-```bash
-git tag -a v<version> -m "meryverse-core <version>" && git push origin v<version>
-```
+Lies eine Regel, wenn „Wann“ auf deine Aufgabe passt.
 
-Grund: Die Website holt die Frontend-Assets (`js/`) **per Tag-Checkout** (`js/` liegt nicht im pip-Paket) und pinnt das
-pip-Paket auf denselben Tag. Ohne Tag erreicht eine Änderung die Website nicht. Wird `js/tokens.css` angefasst, muss sie
-aus `design.py` neu erzeugt werden (`python -m meryverse_core.design > js/tokens.css`; `tests/test_tokens.py` prüft das).
-
-## Tests
-
-```bash
-python3 -m pytest tests/ -q
-```
+| Art | Titel | Wann | Datei |
+|---|---|---|---|
+| Steckbrief | meryverse_core: Architektur und Konsum | bei Änderungen an Paketstruktur oder Auslieferung | [regeln/steckbriefe/core-architektur.md](regeln/steckbriefe/core-architektur.md) |
+| Steckbrief | meryverse_core: offene Baustellen | bei Planung neuer Arbeiten | [regeln/steckbriefe/core-baustellen.md](regeln/steckbriefe/core-baustellen.md) |
+| Steckbrief | meryverse_core: Konsumenten und Abhängigkeiten | bei Änderungen, die Apps betreffen könnten | [regeln/steckbriefe/core-konsumenten.md](regeln/steckbriefe/core-konsumenten.md) |
+| Steckbrief | meryverse_core: wichtige Dateien und Komponenten | bei Arbeiten an Python-Modulen oder am Frontend-Kit | [regeln/steckbriefe/core-wichtige-dateien.md](regeln/steckbriefe/core-wichtige-dateien.md) |
+| Steckbrief | meryverse_core: Zweck | zur Orientierung im Projekt | [regeln/steckbriefe/core-zweck.md](regeln/steckbriefe/core-zweck.md) |
+| Regel | Tests mit pytest ausführen | nach Code-Änderungen | [regeln/regeln/tests-mit-pytest.md](regeln/regeln/tests-mit-pytest.md) |
+| Regel | Versions-Bump immer mit Git-Tag und neu erzeugten Tokens | bei Versionsänderungen, Releases oder Änderungen an js/ und tokens.css | [regeln/regeln/version-bump-mit-git-tag.md](regeln/regeln/version-bump-mit-git-tag.md) |
