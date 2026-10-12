@@ -1,0 +1,15 @@
+{
+  "generator": "cairnos",
+  "files": {
+    ".claude/commands/prime.md": "d01657f641c55b7c808e704489cc6523bd0459aab0d706aa13873dcb3ffb03e6",
+    "CLAUDE.md": "5d0599c5f3b21c7e448c41975dc6da8e7a8cb8f8e84b71273c79d9919ca91c42",
+    "regeln/grundsaetze.md": "66307171d8e9b722359aa7cbe10aefda0cf19db695fb1315963029398e624f1f",
+    "regeln/regeln/tests-mit-pytest.md": "e7d15f3aadb048c190155f5a9babc0a4625038e8ed795e1921778b2f148544be",
+    "regeln/regeln/version-bump-mit-git-tag.md": "63d694a66cb5a3c5abd296d7a7a75a4cf6d345fe73f91ac0b3638829470a7435",
+    "regeln/steckbriefe/core-architektur.md": "73780bf3d077a20b8d7dc5beebb4a8ba4414f482dfd304b2fd20e1afe247f068",
+    "regeln/steckbriefe/core-baustellen.md": "a0a41be98597906e1d68e5b2a73296d98ce44e2d88e9bf432eb7d34fb9409b0b",
+    "regeln/steckbriefe/core-konsumenten.md": "06fe7110a327ad49124bded41cf4da5e09ca3f0671ff39d3403d3acd7169a455",
+    "regeln/steckbriefe/core-wichtige-dateien.md": "ea1bb255e1117e5565d31793994c943b2e16084627bdd4224e3bc4a17cdca346",
+    "regeln/steckbriefe/core-zweck.md": "660c375638f261d79524bdfbe8b5289eb3923e98d4b559aa2d88667d573c35cf"
+  }
+}
