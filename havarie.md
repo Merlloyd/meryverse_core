@@ -1,5 +1,7 @@
 # Havarie — meryverse_core: Git → Produktion live
 
+> **Pfade (seit 2026-10-12):** Das Repo liegt unter `~/IdeaProjects/meryverse_core` mit eigener `.venv`. Bis zum Umzug aus dem aufgelösten Workspace gilt noch `~/IdeaProjects/Meryverse/meryverse_core` bzw. `~/IdeaProjects/Meryverse/.venv`.
+
 > Idiotensichere Schritt-für-Schritt-Anleitung, wie eine Änderung an
 > `meryverse_core` bis zum sichtbaren Ergebnis in Produktion kommt.
 >
@@ -23,7 +25,7 @@ Jede inhaltliche Änderung an core braucht einen Versions-Bump — und die
 Version steht an **zwei** Orten, die übereinstimmen müssen:
 
 ```bash
-cd ~/IdeaProjects/Meryverse/meryverse_core
+cd ~/IdeaProjects/meryverse_core
 
 # 1) pyproject.toml
 grep '^version' pyproject.toml              # z. B. version = "0.3.1"
@@ -86,7 +88,7 @@ Inlinen, kein pip-Pin nötig**.
 
 ```bash
 # 1) Quelle ist meryverse_core/js/<datei>. Vendored Kopie aktualisieren:
-cd ~/IdeaProjects/Meryverse
+cd ~/IdeaProjects
 scripts/sync-core-assets.sh
 #   → kopiert js/feedback.{js,css} nach meryverse-website/apps/static/core/
 
