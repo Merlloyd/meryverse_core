@@ -1,10 +1,10 @@
 ---
 kennung: hilfsdateien-nur-unter-cairnos-tmp
-version: 1
+version: 2
 art: regel
 geltung: alle Projekte
-agenten: alle
-wann: immer
+agenten: gimli, aragorn
+wann: bei jeder Aufgabe, die Code ändert, Tests, Builds oder Installationen ausführt
 ---
 
 <!-- Erzeugt aus CairnOS. Nicht von Hand ändern: Änderungen in CairnOS machen, sie kommen per Pull Request hierher. -->

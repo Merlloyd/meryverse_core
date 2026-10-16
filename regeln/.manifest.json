@@ -2,8 +2,8 @@
   "generator": "cairnos",
   "files": {
     ".claude/commands/prime.md": "d01657f641c55b7c808e704489cc6523bd0459aab0d706aa13873dcb3ffb03e6",
-    "CLAUDE.md": "458d4b6be38bd4ded08f7a6d2c06e4c6cffc8e104c975a5d99cf9abfcdefac86",
-    "regeln/global/hilfsdateien-nur-unter-cairnos-tmp.md": "71ab8ce246f678a0b98ca9b87d391a9d0cc59278a5a04e3cfa50dcfa4faa4448",
+    "CLAUDE.md": "027d37983d6ef2d8081f8ddc7ea5392d4ffcc6f0e1f567a3efd5aba5972bdee8",
+    "regeln/global/hilfsdateien-nur-unter-cairnos-tmp.md": "2007441f4f958c1e4ca0c276688652273d7c78d4c9482f24e87efe78ec13eb3f",
     "regeln/grundsaetze.md": "66307171d8e9b722359aa7cbe10aefda0cf19db695fb1315963029398e624f1f",
     "regeln/regeln/tests-mit-pytest.md": "e7d15f3aadb048c190155f5a9babc0a4625038e8ed795e1921778b2f148544be",
     "regeln/regeln/version-bump-mit-git-tag.md": "63d694a66cb5a3c5abd296d7a7a75a4cf6d345fe73f91ac0b3638829470a7435",
