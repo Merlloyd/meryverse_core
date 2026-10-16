@@ -44,5 +44,6 @@ Lies eine Regel, wenn „Wann“ auf deine Aufgabe passt.
 | Steckbrief | meryverse_core: Konsumenten und Abhängigkeiten | bei Änderungen, die Apps betreffen könnten | [regeln/steckbriefe/core-konsumenten.md](regeln/steckbriefe/core-konsumenten.md) |
 | Steckbrief | meryverse_core: wichtige Dateien und Komponenten | bei Arbeiten an Python-Modulen oder am Frontend-Kit | [regeln/steckbriefe/core-wichtige-dateien.md](regeln/steckbriefe/core-wichtige-dateien.md) |
 | Steckbrief | meryverse_core: Zweck | zur Orientierung im Projekt | [regeln/steckbriefe/core-zweck.md](regeln/steckbriefe/core-zweck.md) |
+| Regel | Hilfsdateien nur unter .cairnos/tmp/ | bei Bedarf | [regeln/global/hilfsdateien-nur-unter-cairnos-tmp.md](regeln/global/hilfsdateien-nur-unter-cairnos-tmp.md) |
 | Regel | Tests mit pytest ausführen | nach Code-Änderungen | [regeln/regeln/tests-mit-pytest.md](regeln/regeln/tests-mit-pytest.md) |
 | Regel | Versions-Bump immer mit Git-Tag und neu erzeugten Tokens | bei Versionsänderungen, Releases oder Änderungen an js/ und tokens.css | [regeln/regeln/version-bump-mit-git-tag.md](regeln/regeln/version-bump-mit-git-tag.md) |
