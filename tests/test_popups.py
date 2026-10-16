@@ -173,3 +173,54 @@ def test_datum_css():
             for sel in s[:-1].split(","):
                 sel = sel.strip()
                 assert sel.startswith(".mxh-") or sel.startswith("input.mxh-dp-feld"), sel
+
+
+def _toast_lauf():
+    import json
+    import shutil
+    import subprocess
+
+    import pytest
+
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node nicht verfügbar")
+    res = subprocess.run([node, str(ROOT / "tests" / "js" / "toast_harness.js"), str(JS / "toast.js")],
+                         capture_output=True, text=True, check=True)
+    return json.loads(res.stdout)
+
+
+def test_toast_option_aktion_vorhanden():
+    js = _lies("toast.js")
+    assert "opts.aktion" in js and "aktion" in js.split("(function")[0]
+    css = _lies("toast.css")
+    for teil in (".mxh-toast--aktion", ".mxh-toast-text", ".mxh-toast-aktionen", "min-height: 44px",
+                 "flex-wrap: wrap", "gap: 6px 12px", "text-align: left"):
+        assert teil in css, teil
+    # only token colours: no hex colours in the new rules
+    neu = css.split("/* Mit Aktion")[1]
+    assert "#" not in neu and "rgb" not in neu
+
+
+def test_toast_aktion_struktur_und_klick():
+    r = _toast_lauf()
+    s = r["struct"]
+    assert s["text"] == "Gelöscht" and s["n"] == 2
+    assert s["tags"] == ["button", "button"] and s["types"] == ["button", "button"]
+    assert s["c0"] == "mxh-btn mxh-btn--primary" and s["c1"] == "mxh-btn mxh-btn--ghost"
+    assert s["role"] == "status" and r["errRole"] == "alert" and r["singleBtn"] == 1
+    assert r["textKlickSchliesst"] is False
+    assert r["knopfKlick"] == {"calls": 1, "ev": 1, "weg": True}
+
+
+def test_toast_timer_pausiert_bei_maus_und_fokus():
+    r = _toast_lauf()
+    assert r["mausPause"] and r["mausNochDa"] and r["mausWeg"]
+    assert r["touchWeg"]
+    assert r["fokusPause"] and r["fokusNochDa"] and r["fokusWeg"]
+
+
+def test_toast_ohne_aktion_unveraendert():
+    r = _toast_lauf()
+    assert r["plain"] == {"txt": "Plain", "kids": 0, "cls": "mxh-toast mxh-toast--ok is-sichtbar"}
+    assert r["plainKlick"] is True
