@@ -27,3 +27,11 @@
 .mxh-toast.is-sichtbar { opacity: 1; transform: none; }
 .mxh-toast--info { border-color: var(--border2, rgba(136, 212, 152, 0.28)); }
 .mxh-toast--err { border-color: var(--neg, #f87171); color: var(--neg, #f87171); }
+/* Mit Aktion: Text plus Knöpfe, linksbündig, Knöpfe umbrechen unter den Text. */
+.mxh-toast--aktion {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  text-align: left; cursor: default;
+}
+.mxh-toast-text { flex: 1 1 auto; min-width: 0; }
+.mxh-toast-aktionen { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-left: auto; }
+.mxh-toast-aktionen .mxh-btn { min-height: 44px; }
